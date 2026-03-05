@@ -21,6 +21,35 @@ const PART1_START_INDEX = 8;
 const PART1_END_INDEX = 19;
 
 const RULE_CONTENT_MAP = {
+  '행선지 상의 및 결정': `
+    <div class="part-rule-preview">
+      <p class="rule-lead">
+        <strong>저택 1F 지도를 보며</strong>, 모두 함께 이번 라운드에 갈 장소를 상의합니다.
+      </p>
+
+      <div class="rule-block">
+        <h4>기본 정보</h4>
+        <p>저택 1F에는 <code>a~j</code> 알파벳이 붙은 방들이 있습니다. 대략적인 위치는 문 배치나 외관으로 짐작할 수 있지만, 각 방이 어떤 공간인지는 아직 밝혀지지 않았습니다.</p>
+        <p>처음부터 확정된 장소는 <strong>a(응접실)</strong>과 <strong>홀</strong>뿐입니다.</p>
+      </div>
+
+      <div class="rule-block">
+        <h4>탐색 규칙</h4>
+        <ul>
+          <li>한 라운드에 각 플레이어는 <strong>1곳</strong>만 탐색할 수 있습니다.</li>
+          <li>같은 장소에 여러 명이 모이면 <strong>협력 탐색</strong>이 가능합니다.</li>
+          <li>인원이 부족하면 조사하기 어려운 장소나, 특정 능력이 필요한 장소도 있습니다.</li>
+        </ul>
+      </div>
+
+      <div class="rule-block leader-block">
+        <h4>리더 결정</h4>
+        <p>저택 내 최종 탐색 배정은 <strong>리더</strong>가 결정합니다. 첫 리더는 <span class="name-collector">[수집가]</span>입니다.</p>
+        <p class="rule-note">"최연장자를 존중하자"는 강한 주장에 모두가 동의했다는 설정입니다.</p>
+        <p><strong>최종 결정권은 리더에게 있습니다.</strong></p>
+      </div>
+    </div>
+  `,
   'P: 능력과 파워': `
     <h3>능력과 파워</h3>
     <p>캐릭터마다 고유한 <strong>능력</strong>이 있습니다. 저택을 탐색하는 과정에서, 해당 능력이 있으면 추가 정보를 얻을 수 있는 경우가 있습니다. 게임 중 카드 등으로 능력 사용이 지정되면, 그 지시에 따라 처리해 주세요.</p>
@@ -751,6 +780,7 @@ closeNpcModal();
 closeConfirmModal();
 document.body.classList.remove('modal-open');
 renderSlide(0);
+
 
 
 

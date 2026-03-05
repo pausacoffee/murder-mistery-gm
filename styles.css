@@ -1082,3 +1082,46 @@ button:disabled {
 
 
 
+
+.part-rule-preview {
+  line-height: 1.75;
+  font-size: 1.02rem;
+}
+
+.rules-modal-body .part-rule-preview h4 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+
+.rule-lead {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 14px;
+}
+
+.rule-block {
+  background: #f8f9fc;
+  border: 1px solid #d9deea;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin: 0 0 12px;
+}
+
+.rule-block ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.rule-block li {
+  margin: 0 0 6px;
+}
+
+.leader-block {
+  border-left: 5px solid #222222;
+}
+
+.rule-note {
+  color: #555555;
+  font-style: italic;
+  margin-top: 6px;
+}

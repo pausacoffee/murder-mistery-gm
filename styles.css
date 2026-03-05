@@ -51,7 +51,7 @@ body {
 }
 
 .header-title {
-  flex: 1;
+  flex: 0 1 auto;
   min-width: 0;
   font-weight: 800;
   white-space: nowrap;
@@ -60,6 +60,7 @@ body {
 }
 
 .header-controls {
+  margin-left: auto;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -83,6 +84,8 @@ body {
   line-height: 1;
   display: grid;
   place-items: center;
+  margin-left: 4px;
+  margin-right: 0;
 }
 
 .header-info-btn:hover {
@@ -336,10 +339,10 @@ button:disabled {
 }
 
 .timer-adjust-btn {
-  min-width: 64px;
-  height: 56px;
+  min-width: 58px;
+  height: 48px;
   border-radius: 12px;
-  background: #111111;
+  background: #dcdbdb;
   color: #ffffff;
   font-size: 2.05rem;
 }
@@ -521,17 +524,31 @@ button:disabled {
   }
 
   .header-title {
-    font-size: 0.95rem;
-  }
+  flex: 0 1 auto;
+  min-width: 0;
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
   
 
   .header-info-btn {
-    width: 28px;
-    height: 28px;
-    min-width: 28px;
-    font-size: 0.82rem;
-  }
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  border-radius: 999px;
+  background: #111111;
+  color: #ffffff;
+  padding: 0;
+  font-size: 0.88rem;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  margin-left: 4px;
+  margin-right: 0;
+}
 
   
   .slide {
@@ -954,4 +971,63 @@ button:disabled {
 
 .timer-widget {
   margin: 0;
+}
+
+.slide[data-index="6"].active {
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.intro-center-title {
+  margin: 0;
+  font-size: clamp(1.55rem, 3.1vw, 2.1rem);
+  font-weight: 800;
+}
+
+.round1-leader-note {
+  margin: 14px 0 0;
+  color: #111111;
+  font-weight: 800;
+  font-size: clamp(1.15rem, 2.2vw, 1.6rem);
+  line-height: 1.5;
+  text-align: center;
+}
+
+.header-info-btn {
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  border-radius: 999px;
+  background: #111111;
+  color: #ffffff;
+  padding: 0;
+  font-size: 0.88rem;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  margin-left: 4px;
+  margin-right: 0;
+}
+
+
+.name-collector {
+  color: #3f3f46;
+  font-weight: 800;
+}
+
+.timer-round-label {
+  margin: 0;
+  text-align: center;
+  font-size: clamp(1.15rem, 2.2vw, 1.6rem);
+  font-weight: 700;
+  color: #1b1f24;
+}
+
+.timer-action-label {
+  margin: 0;
+  text-align: center;
+  font-size: clamp(1.9rem, 3.8vw, 2.8rem);
+  font-weight: 800;
+  color: #111111;
 }

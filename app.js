@@ -117,6 +117,11 @@ function extractPartActionTitle(title) {
   return (title || '').replace(/^\[Part\s*1\]\s*\d+Round:\s*/i, '').trim();
 }
 
+function extractPartRoundText(title) {
+  const match = (title || '').match(/^\[Part\s*1\]\s*(\d+)Round:/i);
+  return match ? `${match[1]} Round` : '';
+}
+
 function updateTimerActionLabel(slideEl, partInfoTitle) {
   if (!slideEl) {
     return;
@@ -127,23 +132,35 @@ function updateTimerActionLabel(slideEl, partInfoTitle) {
     return;
   }
 
-  let labelEl = slideEl.querySelector('.timer-action-label');
+  let roundEl = slideEl.querySelector('.timer-round-label');
+  let actionEl = slideEl.querySelector('.timer-action-label');
+  const roundText = extractPartRoundText(partInfoTitle);
   const actionTitle = extractPartActionTitle(partInfoTitle);
 
   if (!actionTitle) {
-    if (labelEl) {
-      labelEl.remove();
+    if (roundEl) {
+      roundEl.remove();
+    }
+    if (actionEl) {
+      actionEl.remove();
     }
     return;
   }
 
-  if (!labelEl) {
-    labelEl = document.createElement('p');
-    labelEl.className = 'timer-action-label';
-    slideEl.insertBefore(labelEl, timerWidget);
+  if (!roundEl) {
+    roundEl = document.createElement('h3');
+    roundEl.className = 'timer-round-label';
+    slideEl.insertBefore(roundEl, timerWidget);
   }
 
-  labelEl.textContent = actionTitle;
+  if (!actionEl) {
+    actionEl = document.createElement('h1');
+    actionEl.className = 'timer-action-label';
+    slideEl.insertBefore(actionEl, timerWidget);
+  }
+
+  roundEl.textContent = roundText;
+  actionEl.textContent = actionTitle;
 }
 function isRulesModalOpen() {
   return Boolean(rulesModal) && !rulesModal.classList.contains('hidden');
@@ -606,7 +623,7 @@ function renderSlide(index) {
   updateTimerActionLabel(slides[index], partInfoTitle);
 
   if (headerPartInfoBtn) {
-    const showPartInfo = Boolean(partInfoTitle);
+    const showPartInfo = isPart1Slide(index) && Boolean(partInfoTitle);
     headerPartInfoBtn.classList.toggle('hidden', !showPartInfo);
     headerPartInfoBtn.setAttribute('aria-hidden', showPartInfo ? 'false' : 'true');
   }
@@ -734,6 +751,8 @@ closeNpcModal();
 closeConfirmModal();
 document.body.classList.remove('modal-open');
 renderSlide(0);
+
+
 
 
 

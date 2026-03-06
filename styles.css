@@ -1355,3 +1355,14 @@ button:disabled {
   font-style: italic;
   margin-top: 6px;
 }
+
+.rule-example-box {
+  border-left: 5px solid #355b92;
+  background: #f2f6fd;
+}
+
+.rule-example-box code {
+  display: inline-block;
+  margin-top: 2px;
+  line-height: 1.5;
+}

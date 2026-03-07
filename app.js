@@ -991,15 +991,63 @@ class MultiGameApp {
 
     this.viewportGuard = new ViewportGuard(document.getElementById('orientationGuard'));
     this.adSlotManager = new AdSlotManager();
+    this.boundDeviceContextUpdate = () => {
+      this.applyDeviceContextClass();
+      this.updateMobileSlideFrameSize();
+    };
+    this.boundVisualViewportUpdate = () => this.updateMobileSlideFrameSize();
   }
 
   async init() {
+    this.applyDeviceContextClass();
+    this.updateMobileSlideFrameSize();
+    window.addEventListener('resize', this.boundDeviceContextUpdate);
+    window.addEventListener('orientationchange', this.boundDeviceContextUpdate);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', this.boundVisualViewportUpdate);
+      window.visualViewport.addEventListener('scroll', this.boundVisualViewportUpdate);
+    }
     this.viewportGuard.init();
     this.adSlotManager.render();
     this.bindGlobalEvents();
     await this.loadGames();
     this.renderCatalog();
     await this.applyRouteFromHash();
+  }
+
+  applyDeviceContextClass() {
+    const ua = navigator.userAgent || '';
+    const isLikelyMobileUA = /Android|iPhone|iPad|iPod|Mobile|Windows Phone/i.test(ua);
+    const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
+    const isSmallScreen = window.matchMedia('(max-width: 900px)').matches;
+    const isMobileContext = (isCoarsePointer && isSmallScreen) || isLikelyMobileUA;
+
+    document.body.classList.toggle('is-mobile', isMobileContext);
+    document.body.classList.toggle('is-desktop', !isMobileContext);
+  }
+
+  updateMobileSlideFrameSize() {
+    const root = document.documentElement;
+    const vv = window.visualViewport;
+    const vw = vv ? vv.width : window.innerWidth;
+    const vh = vv ? vv.height : window.innerHeight;
+    const isMobile = document.body.classList.contains('is-mobile');
+    const isLandscape = vw > vh;
+
+    if (!isMobile || !isLandscape) {
+      root.style.removeProperty('--mobile-slide-w');
+      root.style.removeProperty('--mobile-slide-h');
+      return;
+    }
+
+    const horizontalPadding = 12;
+    const verticalPadding = 8;
+    const targetByHeight = Math.max(320, (vh - verticalPadding) * (16 / 9));
+    const width = Math.max(320, Math.min(vw - horizontalPadding, targetByHeight));
+    const height = Math.max(180, width * (9 / 16));
+
+    root.style.setProperty('--mobile-slide-w', `${Math.round(width)}px`);
+    root.style.setProperty('--mobile-slide-h', `${Math.round(height)}px`);
   }
 
   async loadGames() {

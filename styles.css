@@ -1921,4 +1921,166 @@ button:disabled {
     height: 14px;
   }
 }
+
+/* Mobile readability + overlap guard */
+@media (max-width: 900px) {
+  body {
+    font-size: 14px;
+  }
+
+  body.is-mobile .platform-shell {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  body.is-mobile .app-shell {
+    padding-left: 2px;
+    padding-right: 2px;
+  }
+
+  body.is-mobile .view-card {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  body.is-mobile .ad-slot,
+  body.is-mobile .side-ad {
+    display: none !important;
+  }
+
+  .platform-title {
+    font-size: 1.3rem;
+  }
+
+  .platform-subtitle {
+    font-size: 0.85rem;
+  }
+
+  .top-bar {
+    gap: 6px;
+    padding: 8px 10px;
+  }
+
+  .header-title {
+    font-size: 0.95rem;
+  }
+
+  .header-controls {
+    gap: 6px;
+  }
+
+  .page-indicator {
+    min-width: 44px;
+    font-size: 0.85rem;
+  }
+
+  .header-part-end-btn {
+    padding: 6px 10px;
+    font-size: 0.74rem;
+  }
+
+  #prevBtn,
+  #nextBtn {
+    min-width: 34px;
+    min-height: 30px;
+    font-size: 0.9rem;
+    padding: 0;
+  }
+
+  .slide {
+    padding: 12px;
+    overflow-y: auto;
+  }
+
+  .content-list,
+  .scrollable-text,
+  .part-rule-preview {
+    font-size: 0.92rem;
+    line-height: 1.6;
+  }
+
+  .node {
+    min-width: 108px;
+    padding: 10px 10px;
+    font-size: 0.83rem;
+  }
+
+  .part1-order-btn,
+  .part3-flow-btn {
+    font-size: 0.9rem;
+    padding: 10px 12px;
+  }
+
+  .timer-display {
+    min-width: 132px;
+    font-size: 2.2rem;
+    letter-spacing: 1px;
+  }
+
+  .timer-adjust-btn {
+    min-width: 46px;
+    height: 40px;
+    font-size: 1.3rem;
+  }
+
+  .timer-toggle-btn {
+    min-width: 120px;
+    height: 40px;
+    font-size: 0.9rem;
+  }
+
+  .round1-leader-note,
+  .timer-round-label {
+    font-size: 0.95rem;
+  }
+
+  .timer-action-label {
+    font-size: clamp(1.1rem, 3.2vw, 1.6rem);
+  }
+}
+
+@media (max-width: 900px) and (orientation: landscape) {
+  .platform-shell {
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .app-shell {
+    padding: 6px;
+    min-height: auto;
+  }
+
+  body.is-mobile .slide-frame {
+    width: var(--mobile-slide-w, calc(100vw - 12px));
+    height: var(--mobile-slide-h, calc((100vw - 12px) * 9 / 16));
+    border-radius: 8px;
+    margin: 0 auto;
+  }
+
+  .top-bar {
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .header-title {
+    flex: 1 1 100%;
+    order: 1;
+  }
+
+  .header-controls {
+    width: 100%;
+    order: 2;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+
+  .timer-widget {
+    width: min(620px, 100%);
+  }
+}
 }

@@ -1,0 +1,386 @@
+{
+    "version":  "1.0",
+    "games":  [
+                  {
+                      "id":  "bunga",
+                      "name":  "분가",
+                      "playerMin":  5,
+                      "playerMax":  6,
+                      "boxImage":  "",
+                      "prequel":  "저택에서 벌어진 죽음의 밤, 서로를 의심하며 탈출의 단서를 찾아야 합니다.",
+                      "recommendedPlayers":  "6인 추천",
+                      "copyrightNotice":  "© [게임사명]. All rights reserved.",
+                      "bgmEnabled":  false,
+                      "bgm":  {
+                                  "defaultTrack":  "",
+                                  "slideTracks":  {
+
+                                                  }
+                              },
+                      "rules":  {
+                                    "tabs":  [
+                                                 {
+                                                     "key":  "P",
+                                                     "label":  "능력과 파워"
+                                                 },
+                                                 {
+                                                     "key":  "S",
+                                                     "label":  "승점"
+                                                 },
+                                                 {
+                                                     "key":  "R",
+                                                     "label":  "전체"
+                                                 }
+                                             ],
+                                    "source":  "bunga"
+                                },
+                      "slidesHtmlPath":  "data/bunga-slides.html",
+                      "slides":  [
+                                     {
+                                         "index":  0,
+                                         "title":  "게임 흐름 요약",
+                                         "partInfoTitle":  null,
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  null,
+                                         "className":  "slide active"
+                                     },
+                                     {
+                                         "index":  1,
+                                         "title":  "게임 준비",
+                                         "partInfoTitle":  null,
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  null,
+                                         "className":  "slide"
+                                     },
+                                     {
+                                         "index":  2,
+                                         "title":  "스토리",
+                                         "partInfoTitle":  null,
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  null,
+                                         "className":  "slide story-slide"
+                                     },
+                                     {
+                                         "index":  3,
+                                         "title":  "캐릭터 소개 페이지",
+                                         "partInfoTitle":  null,
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  null,
+                                         "className":  "slide character-slide"
+                                     },
+                                     {
+                                         "index":  4,
+                                         "title":  "캐릭터 설정서 숙지 시간",
+                                         "partInfoTitle":  null,
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  null,
+                                         "className":  "slide timer-slide"
+                                     },
+                                     {
+                                         "index":  5,
+                                         "title":  "규칙",
+                                         "partInfoTitle":  null,
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  null,
+                                         "className":  "slide rules-slide"
+                                     },
+                                     {
+                                         "index":  6,
+                                         "title":  "자기소개 시간",
+                                         "partInfoTitle":  null,
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  null,
+                                         "className":  "slide"
+                                     },
+                                     {
+                                         "index":  7,
+                                         "title":  "[파트 1] 진행 순서",
+                                         "partInfoTitle":  null,
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  null,
+                                         "className":  "slide part1-order-slide"
+                                     },
+                                     {
+                                         "index":  8,
+                                         "title":  "[파트 1] 라운드 1: 행선지 상의 및 결정",
+                                         "partInfoTitle":  "[파트 1] 라운드 1: 행선지 상의 및 결정",
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  null,
+                                         "className":  "slide timer-slide"
+                                     },
+                                     {
+                                         "index":  9,
+                                         "title":  "[파트 1] 라운드 1: 탐색 및 정보 공유",
+                                         "partInfoTitle":  "[파트 1] 라운드 1: 탐색 및 정보 공유",
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  null,
+                                         "className":  "slide timer-slide"
+                                     },
+                                     {
+                                         "index":  10,
+                                         "title":  "[파트 1] 라운드 1: 인물 관찰 및 정보 공유",
+                                         "partInfoTitle":  "[파트 1] 라운드 1: 인물 관찰 및 정보 공유",
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  null,
+                                         "className":  "slide timer-slide"
+                                     },
+                                     {
+                                         "index":  11,
+                                         "title":  "[파트 1] 라운드 1: 다음 라운드 리더 지명",
+                                         "partInfoTitle":  "[파트 1] 라운드 1: 다음 라운드 리더 지명",
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  null,
+                                         "className":  "slide timer-slide"
+                                     },
+                                     {
+                                         "index":  12,
+                                         "title":  "[파트 1] 라운드 2: 행선지 상의 및 결정",
+                                         "partInfoTitle":  "[파트 1] 라운드 2: 행선지 상의 및 결정",
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  null,
+                                         "className":  "slide timer-slide"
+                                     },
+                                     {
+                                         "index":  13,
+                                         "title":  "[파트 1] 라운드 2: 탐색 및 정보 공유",
+                                         "partInfoTitle":  "[파트 1] 라운드 2: 탐색 및 정보 공유",
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  null,
+                                         "className":  "slide timer-slide"
+                                     },
+                                     {
+                                         "index":  14,
+                                         "title":  "[파트 1] 라운드 2: 인물 관찰 및 정보 공유",
+                                         "partInfoTitle":  "[파트 1] 라운드 2: 인물 관찰 및 정보 공유",
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  null,
+                                         "className":  "slide timer-slide"
+                                     },
+                                     {
+                                         "index":  15,
+                                         "title":  "[파트 1] 라운드 2: 다음 라운드 리더 지명",
+                                         "partInfoTitle":  "[파트 1] 라운드 2: 다음 라운드 리더 지명",
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  null,
+                                         "className":  "slide timer-slide"
+                                     },
+                                     {
+                                         "index":  16,
+                                         "title":  "[파트 1] 라운드 3: 행선지 상의 및 결정",
+                                         "partInfoTitle":  "[파트 1] 라운드 3: 행선지 상의 및 결정",
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  null,
+                                         "className":  "slide timer-slide"
+                                     },
+                                     {
+                                         "index":  17,
+                                         "title":  "[파트 1] 라운드 3: 탐색 및 정보 공유",
+                                         "partInfoTitle":  "[파트 1] 라운드 3: 탐색 및 정보 공유",
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  null,
+                                         "className":  "slide timer-slide"
+                                     },
+                                     {
+                                         "index":  18,
+                                         "title":  "[파트 1] 라운드 3: 인물 관찰 및 정보 공유",
+                                         "partInfoTitle":  "[파트 1] 라운드 3: 인물 관찰 및 정보 공유",
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  null,
+                                         "className":  "slide timer-slide"
+                                     },
+                                     {
+                                         "index":  19,
+                                         "title":  "[파트 1] 라운드 3: 다음 라운드 리더 지명",
+                                         "partInfoTitle":  "[파트 1] 라운드 3: 다음 라운드 리더 지명",
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  null,
+                                         "className":  "slide timer-slide"
+                                     },
+                                     {
+                                         "index":  20,
+                                         "title":  "[파트 2] 스토리",
+                                         "partInfoTitle":  null,
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  "part2-start",
+                                         "className":  "slide chapter21-slide"
+                                     },
+                                     {
+                                         "index":  21,
+                                         "title":  "[파트 2] 준비",
+                                         "partInfoTitle":  null,
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  null,
+                                         "className":  "slide chapter22-slide"
+                                     },
+                                     {
+                                         "index":  22,
+                                         "title":  "[파트 2] 개인 설정서 파트 2확인",
+                                         "partInfoTitle":  null,
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  null,
+                                         "className":  "slide timer-slide"
+                                     },
+                                     {
+                                         "index":  23,
+                                         "title":  "[파트 2] 진행 순서",
+                                         "partInfoTitle":  null,
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  null,
+                                         "className":  "slide part1-order-slide"
+                                     },
+                                     {
+                                         "index":  24,
+                                         "title":  "[파트 2] 라운드 1: 행선지 상의 및 결정",
+                                         "partInfoTitle":  "[파트 2] 라운드 1: 행선지 상의 및 결정",
+                                         "partInfoTopic":  "행선지 상의 및 결정(3분)",
+                                         "partAnchor":  null,
+                                         "className":  "slide timer-slide"
+                                     },
+                                     {
+                                         "index":  25,
+                                         "title":  "[파트 2] 라운드 1: 탐색과 정보 공유",
+                                         "partInfoTitle":  "[파트 2] 라운드 1: 탐색과 정보 공유",
+                                         "partInfoTopic":  "탐색과 정보 공유(15분)",
+                                         "partAnchor":  null,
+                                         "className":  "slide timer-slide"
+                                     },
+                                     {
+                                         "index":  26,
+                                         "title":  "[파트 2] 라운드 1: 다음 라운드 리더 지명",
+                                         "partInfoTitle":  "[파트 2] 라운드 1: 다음 라운드 리더 지명",
+                                         "partInfoTopic":  "다음 라운드 리더 지명(1분)",
+                                         "partAnchor":  null,
+                                         "className":  "slide timer-slide"
+                                     },
+                                     {
+                                         "index":  27,
+                                         "title":  "[파트 2] 라운드 2: 행선지 상의 및 결정",
+                                         "partInfoTitle":  "[파트 2] 라운드 2: 행선지 상의 및 결정",
+                                         "partInfoTopic":  "행선지 상의 및 결정(3분)",
+                                         "partAnchor":  null,
+                                         "className":  "slide timer-slide"
+                                     },
+                                     {
+                                         "index":  28,
+                                         "title":  "[파트 2] 라운드 2: 탐색과 정보 공유",
+                                         "partInfoTitle":  "[파트 2] 라운드 2: 탐색과 정보 공유",
+                                         "partInfoTopic":  "탐색과 정보 공유(15분)",
+                                         "partAnchor":  null,
+                                         "className":  "slide timer-slide"
+                                     },
+                                     {
+                                         "index":  29,
+                                         "title":  "[파트 2] 라운드 2: 다음 라운드 리더 지명",
+                                         "partInfoTitle":  "[파트 2] 라운드 2: 다음 라운드 리더 지명",
+                                         "partInfoTopic":  "다음 라운드 리더 지명(1분)",
+                                         "partAnchor":  null,
+                                         "className":  "slide timer-slide"
+                                     },
+                                     {
+                                         "index":  30,
+                                         "title":  "[파트 2] 라운드 3: 행선지 상의 및 결정",
+                                         "partInfoTitle":  "[파트 2] 라운드 3: 행선지 상의 및 결정",
+                                         "partInfoTopic":  "행선지 상의 및 결정(3분)",
+                                         "partAnchor":  null,
+                                         "className":  "slide timer-slide"
+                                     },
+                                     {
+                                         "index":  31,
+                                         "title":  "[파트 2] 라운드 3: 탐색과 정보 공유",
+                                         "partInfoTitle":  "[파트 2] 라운드 3: 탐색과 정보 공유",
+                                         "partInfoTopic":  "탐색과 정보 공유(15분)",
+                                         "partAnchor":  null,
+                                         "className":  "slide timer-slide"
+                                     },
+                                     {
+                                         "index":  32,
+                                         "title":  "[파트 2] 라운드 3: 다음 라운드 리더 지명",
+                                         "partInfoTitle":  "[파트 2] 라운드 3: 다음 라운드 리더 지명",
+                                         "partInfoTopic":  "다음 라운드 리더 지명(1분)",
+                                         "partAnchor":  null,
+                                         "className":  "slide timer-slide"
+                                     },
+                                     {
+                                         "index":  33,
+                                         "title":  "[파트 2] 라운드 4: 행선지 상의 및 결정",
+                                         "partInfoTitle":  "[파트 2] 라운드 4: 행선지 상의 및 결정",
+                                         "partInfoTopic":  "행선지 상의 및 결정(3분)",
+                                         "partAnchor":  null,
+                                         "className":  "slide timer-slide"
+                                     },
+                                     {
+                                         "index":  34,
+                                         "title":  "[파트 2] 라운드 4: 탐색과 정보 공유",
+                                         "partInfoTitle":  "[파트 2] 라운드 4: 탐색과 정보 공유",
+                                         "partInfoTopic":  "탐색과 정보 공유(15분)",
+                                         "partAnchor":  null,
+                                         "className":  "slide timer-slide"
+                                     },
+                                     {
+                                         "index":  35,
+                                         "title":  "[파트 2] 라운드 4: 다음 라운드 리더 지명",
+                                         "partInfoTitle":  "[파트 2] 라운드 4: 다음 라운드 리더 지명",
+                                         "partInfoTopic":  "다음 라운드 리더 지명(1분)",
+                                         "partAnchor":  null,
+                                         "className":  "slide timer-slide"
+                                     },
+                                     {
+                                         "index":  36,
+                                         "title":  "[파트 3] 스토리",
+                                         "partInfoTitle":  null,
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  "part3-start",
+                                         "className":  "slide chapter37-slide"
+                                     },
+                                     {
+                                         "index":  37,
+                                         "title":  "[파트 3] 준비",
+                                         "partInfoTitle":  null,
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  null,
+                                         "className":  "slide part3-prep-slide"
+                                     },
+                                     {
+                                         "index":  38,
+                                         "title":  "[파트 3] 전체 회의",
+                                         "partInfoTitle":  null,
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  null,
+                                         "className":  "slide timer-slide"
+                                     },
+                                     {
+                                         "index":  39,
+                                         "title":  "[파트 3] 추리 페이즈",
+                                         "partInfoTitle":  null,
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  null,
+                                         "className":  "slide timer-slide"
+                                     },
+                                     {
+                                         "index":  40,
+                                         "title":  "[파트 3] 투표",
+                                         "partInfoTitle":  null,
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  null,
+                                         "className":  "slide part3-vote-slide"
+                                     },
+                                     {
+                                         "index":  41,
+                                         "title":  "[파트 3] 사제 선발",
+                                         "partInfoTitle":  null,
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  null,
+                                         "className":  "slide part3-priest-slide"
+                                     },
+                                     {
+                                         "index":  42,
+                                         "title":  "[파트 3] 엔딩",
+                                         "partInfoTitle":  null,
+                                         "partInfoTopic":  null,
+                                         "partAnchor":  null,
+                                         "className":  "slide part3-ending-slide"
+                                     }
+                                 ]
+                  }
+              ]
+}

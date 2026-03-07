@@ -1,39 +1,11 @@
-﻿const slides = Array.from(document.querySelectorAll('.slide'));
-const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
-const pageNow = document.getElementById('pageNow');
-const pageTotal = document.getElementById('pageTotal');
-const headerTitle = document.getElementById('headerTitle');
-const slidesContainer = document.getElementById('slidesContainer');
-const headerRulesBookBtn = document.getElementById('headerRulesBookBtn');
-const headerPartInfoBtn = document.getElementById('headerPartInfoBtn');
-const headerPartEndBtn = document.getElementById('headerPartEndBtn');
-const headerPart2EndBtn = document.getElementById('headerPart2EndBtn');
-const rulesModal = document.getElementById('rulesModal');
-const rulesModalTitle = document.getElementById('rulesModalTitle');
-const rulesModalBody = document.getElementById('rulesModalBody');
-const rulesModalTabs = document.getElementById('rulesModalTabs');
-const rulesInlineBody = document.getElementById('rulesInlineBody');
-const inlineRuleTabs = Array.from(document.querySelectorAll('[data-role="inline-rule-tab"]'));
-const modalRuleTabs = Array.from(document.querySelectorAll('[data-role="modal-rule-tab"]'));
-const npcModal = document.getElementById('npcModal');
-const confirmModal = document.getElementById('confirmModal');
-const confirmModalMessage = document.getElementById('confirmModalMessage');
-
-let pendingConfirmAction = null;
-let activeRuleTabKey = 'P';
-
-const PART1_START_INDEX = 8;
-const PART1_END_INDEX = 19;
-const PART2_START_INDEX = 24;
-const PART2_END_INDEX = 35;
+﻿
 const RULE_TAB_TOPIC_MAP = {
   P: '능력과 파워',
   S: '승점',
   R: '전체',
 };
 
-const RULE_CONTENT_MAP = {
+const BUNGA_RULE_CONTENT_MAP = {
   '행선지 상의 및 결정': `
     <div class="part-rule-preview">
       <p class="rule-lead">
@@ -302,324 +274,98 @@ const RULE_CONTENT_MAP = {
   `,
 };
 
-function isConfirmModalOpen() {
-  return Boolean(confirmModal) && !confirmModal.classList.contains('hidden');
+class AdSlotManager {
+  constructor() {
+    this.slots = Array.from(document.querySelectorAll('[data-slot]'));
+  }
+
+  render() {
+    this.slots.forEach((slot) => {
+      slot.textContent = '광고 영역';
+    });
+  }
 }
 
-function openConfirmModal(message, onConfirm) {
-  if (!confirmModal || !confirmModalMessage) {
-    if (typeof onConfirm === 'function') {
-      onConfirm();
+class ViewportGuard {
+  constructor(element) {
+    this.element = element;
+    this.onResize = this.onResize.bind(this);
+  }
+
+  init() {
+    window.addEventListener('resize', this.onResize);
+    window.addEventListener('orientationchange', this.onResize);
+    this.onResize();
+  }
+
+  onResize() {
+    const isMobileWidth = window.innerWidth <= 900;
+    const isPortrait = window.matchMedia('(orientation: portrait)').matches;
+    this.element.classList.toggle('hidden', !(isMobileWidth && isPortrait));
+  }
+}
+
+class BGMController {
+  constructor(panelEl, muteBtn, volumeRange) {
+    this.panelEl = panelEl;
+    this.muteBtn = muteBtn;
+    this.volumeRange = volumeRange;
+    this.audio = new Audio();
+    this.audio.loop = true;
+    this.audio.volume = Number.parseFloat(volumeRange.value || '0.5');
+    this.currentTrack = '';
+    this.gameConfig = null;
+
+    this.muteBtn.addEventListener('click', () => {
+      this.audio.muted = !this.audio.muted;
+      this.muteBtn.textContent = this.audio.muted ? '음소거 해제' : '음소거';
+    });
+
+    this.volumeRange.addEventListener('input', () => {
+      this.audio.volume = Number.parseFloat(this.volumeRange.value || '0.5');
+    });
+  }
+
+  applyGame(game) {
+    this.gameConfig = game;
+    const enabled = Boolean(game?.bgmEnabled);
+    this.panelEl.classList.toggle('hidden', !enabled);
+    if (!enabled) {
+      this.stop();
     }
-    return;
   }
 
-  confirmModalMessage.innerHTML = message;
-  pendingConfirmAction = typeof onConfirm === 'function' ? onConfirm : null;
-  confirmModal.classList.remove('hidden');
-  confirmModal.setAttribute('aria-hidden', 'false');
-}
-
-function closeConfirmModal() {
-  if (!confirmModal) {
-    return;
-  }
-
-  confirmModal.classList.add('hidden');
-  confirmModal.setAttribute('aria-hidden', 'true');
-  pendingConfirmAction = null;
-}
-
-function submitConfirmModal() {
-  const action = pendingConfirmAction;
-  closeConfirmModal();
-  if (typeof action === 'function') {
-    action();
-  }
-}
-
-function isPart1Slide(index) {
-  return index >= PART1_START_INDEX && index <= PART1_END_INDEX;
-}
-
-function isPart2Slide(index) {
-  return index >= PART2_START_INDEX && index <= PART2_END_INDEX;
-}
-
-function getPart2StartIndex() {
-  const index = slides.findIndex((slide) => slide.dataset.partAnchor === 'part2-start');
-  return index;
-}
-
-function getPart3StartIndex() {
-  const index = slides.findIndex((slide) => slide.dataset.partAnchor === 'part3-start');
-  return index;
-}
-
-function openPart2EnterConfirm() {
-  const message = '<strong class="confirm-primary-line">이야기 카드 A</strong>가 공개되었습니까?<br><span class="confirm-warning-line">파트 2</span>로 진입합니다.';
-  openConfirmModal(message, () => {
-    const part2Index = getPart2StartIndex();
-    if (part2Index >= 0) {
-      renderSlide(part2Index);
-    }
-  });
-}
-
-function openPart3EnterConfirm() {
-  const message = '<strong class="confirm-primary-line">이야기 카드 B</strong>가 공개되었습니까?<br><span class="confirm-warning-line">파트 3</span>로 진입합니다.';
-  openConfirmModal(message, () => {
-    const part3Index = getPart3StartIndex();
-    if (part3Index >= 0) {
-      renderSlide(part3Index);
-    }
-  });
-}
-
-function extractPartActionTitle(title) {
-  return (title || '').replace(/^\[(?:Part|파트)\s*\d+\]\s*(?:\d+\s*(?:Round|Rount|라운드)|(?:Round|Rount|라운드)\s*\d+):\s*/i, '').trim();
-}
-
-function extractPartRoundText(title) {
-  const text = title || '';
-  const matchNumberFirst = text.match(/^\[(?:Part|파트)\s*\d+\]\s*(\d+)\s*(?:Round|Rount|라운드):/i);
-  if (matchNumberFirst) {
-    return `라운드 ${matchNumberFirst[1]}`;
-  }
-
-  const matchWordFirst = text.match(/^\[(?:Part|파트)\s*\d+\]\s*(?:Round|Rount|라운드)\s*(\d+):/i);
-  return matchWordFirst ? `라운드 ${matchWordFirst[1]}` : '';
-}
-
-function updateTimerActionLabel(slideEl, partInfoTitle) {
-  if (!slideEl) {
-    return;
-  }
-
-  const timerWidget = slideEl.querySelector('.timer-widget');
-  if (!timerWidget) {
-    return;
-  }
-
-  let roundEl = slideEl.querySelector('.timer-round-label');
-  let actionEl = slideEl.querySelector('.timer-action-label');
-  const roundText = extractPartRoundText(partInfoTitle);
-  const actionTitle = extractPartActionTitle(partInfoTitle);
-
-  if (!actionTitle) {
-    if (roundEl) {
-      roundEl.remove();
-    }
-    if (actionEl) {
-      actionEl.remove();
-    }
-    return;
-  }
-
-  if (!roundEl) {
-    roundEl = document.createElement('h3');
-    roundEl.className = 'timer-round-label';
-    slideEl.insertBefore(roundEl, timerWidget);
-  }
-
-  if (!actionEl) {
-    actionEl = document.createElement('h1');
-    actionEl.className = 'timer-action-label';
-    slideEl.insertBefore(actionEl, timerWidget);
-  }
-
-  roundEl.textContent = roundText;
-  actionEl.textContent = actionTitle;
-}
-function isRulesModalOpen() {
-  return Boolean(rulesModal) && !rulesModal.classList.contains('hidden');
-}
-
-function isNpcModalOpen() {
-  return Boolean(npcModal) && !npcModal.classList.contains('hidden');
-}
-
-function isAnyModalOpen() {
-  return isRulesModalOpen() || isNpcModalOpen() || isConfirmModalOpen();
-}
-
-function openNpcModal() {
-  if (!npcModal) {
-    return;
-  }
-
-  npcModal.classList.remove('hidden');
-  npcModal.setAttribute('aria-hidden', 'false');
-}
-
-function closeNpcModal() {
-  if (!npcModal) {
-    return;
-  }
-
-  npcModal.classList.add('hidden');
-  npcModal.setAttribute('aria-hidden', 'true');
-}
-
-function getRuleTopicByKey(ruleKey) {
-  return RULE_TAB_TOPIC_MAP[ruleKey] || '';
-}
-
-function getRuleKeyByTopic(topic) {
-  return Object.keys(RULE_TAB_TOPIC_MAP).find((key) => RULE_TAB_TOPIC_MAP[key] === topic) || '';
-}
-
-function setRuleTabState(buttons, activeKey) {
-  buttons.forEach((button) => {
-    const isActive = button.dataset.ruleKey === activeKey;
-    button.classList.toggle('active', isActive);
-    button.setAttribute('aria-selected', isActive ? 'true' : 'false');
-  });
-}
-
-function renderInlineRules(ruleKey) {
-  const topic = getRuleTopicByKey(ruleKey);
-  if (!topic || !rulesInlineBody) {
-    return;
-  }
-
-  activeRuleTabKey = ruleKey;
-  setRuleTabState(inlineRuleTabs, ruleKey);
-  rulesInlineBody.innerHTML = RULE_CONTENT_MAP[topic] || '<p>규칙 텍스트는 차후 삽입 예정</p>';
-}
-
-function renderRulesModalRuleTab(ruleKey) {
-  const topic = getRuleTopicByKey(ruleKey);
-  if (!topic || !rulesModalBody || !rulesModalTitle) {
-    return;
-  }
-
-  activeRuleTabKey = ruleKey;
-  rulesModalTitle.textContent = '규칙';
-  rulesModalBody.innerHTML = RULE_CONTENT_MAP[topic] || '<p>규칙 텍스트는 차후 삽입 예정</p>';
-  setRuleTabState(modalRuleTabs, ruleKey);
-}
-
-function openRulesModal(topic, options = {}) {
-  if (!rulesModal || !rulesModalTitle || !rulesModalBody || !rulesModalTabs) {
-    return;
-  }
-
-  const tabKeyByTopic = getRuleKeyByTopic(topic);
-  const forceTabbed = options.forceTabbed === true;
-  const useTabbedMode = forceTabbed || Boolean(tabKeyByTopic);
-
-  rulesModalTabs.classList.toggle('hidden', !useTabbedMode);
-  if (useTabbedMode) {
-    const resolvedKey = options.ruleKey || tabKeyByTopic || activeRuleTabKey || 'P';
-    renderRulesModalRuleTab(resolvedKey);
-  } else {
-    rulesModalTitle.textContent = topic;
-    rulesModalBody.innerHTML = RULE_CONTENT_MAP[topic] || '<p>규칙 텍스트는 차후 삽입 예정</p>';
-  }
-
-  rulesModal.classList.remove('hidden');
-  rulesModal.setAttribute('aria-hidden', 'false');
-}
-
-function closeRulesModal() {
-  if (!rulesModal) {
-    return;
-  }
-
-  rulesModal.classList.add('hidden');
-  rulesModal.setAttribute('aria-hidden', 'true');
-}
-
-function setupRulesModal() {
-  document.addEventListener('click', (event) => {
-    const inlineRuleTabTarget = event.target.closest('[data-role="inline-rule-tab"]');
-    if (inlineRuleTabTarget) {
-      const ruleKey = inlineRuleTabTarget.dataset.ruleKey;
-      if (ruleKey) {
-        renderInlineRules(ruleKey);
-      }
+  updateBySlide(index) {
+    if (!this.gameConfig || !this.gameConfig.bgmEnabled) {
       return;
     }
 
-    const modalRuleTabTarget = event.target.closest('[data-role="modal-rule-tab"]');
-    if (modalRuleTabTarget) {
-      const ruleKey = modalRuleTabTarget.dataset.ruleKey;
-      if (ruleKey) {
-        renderRulesModalRuleTab(ruleKey);
-      }
+    const slideTrack = this.gameConfig.bgm?.slideTracks?.[String(index)] || '';
+    const nextTrack = slideTrack || this.gameConfig.bgm?.defaultTrack || '';
+    if (!nextTrack || nextTrack === this.currentTrack) {
       return;
     }
 
-    const rulesCloseTarget = event.target.closest('[data-role="rules-modal-close"]');
-    if (rulesCloseTarget) {
-      closeRulesModal();
+    this.currentTrack = nextTrack;
+    this.audio.src = nextTrack;
+    this.audio.play().catch(() => {});
+  }
+
+  startOnUserGesture() {
+    if (!this.gameConfig?.bgmEnabled) {
       return;
     }
-
-    const npcCloseTarget = event.target.closest('[data-role="npc-modal-close"]');
-    if (npcCloseTarget) {
-      closeNpcModal();
-      return;
+    if (this.currentTrack) {
+      this.audio.play().catch(() => {});
     }
+  }
 
-    const confirmCancelTarget = event.target.closest('[data-role="confirm-cancel"]');
-    if (confirmCancelTarget) {
-      closeConfirmModal();
-      return;
-    }
-
-    const confirmOkTarget = event.target.closest('[data-role="confirm-ok"]');
-    if (confirmOkTarget) {
-      submitConfirmModal();
-      return;
-    }
-
-    const npcOpenTarget = event.target.closest('[data-role="npc-open"]');
-    if (npcOpenTarget) {
-      openConfirmModal('NPC 캐릭터가 공개됩니다.', () => openNpcModal());
-      return;
-    }
-
-    const partInfoOpenTarget = event.target.closest('[data-role="part-info-open"]');
-    if (partInfoOpenTarget) {
-      const activeSlide = slides[currentIndex];
-      const partInfoTopic = activeSlide?.dataset.partInfoTopic;
-      const partInfoTitle = activeSlide?.dataset.partInfoTitle;
-      const actionTitle = partInfoTopic || extractPartActionTitle(partInfoTitle);
-      if (actionTitle) {
-        openRulesModal(actionTitle);
-      }
-      return;
-    }
-
-    const partEndOpenTarget = event.target.closest('[data-role="part-end-open"]');
-    if (partEndOpenTarget) {
-      openPart2EnterConfirm();
-      return;
-    }
-
-    const part2EndOpenTarget = event.target.closest('[data-role="part2-end-open"]');
-    if (part2EndOpenTarget) {
-      openPart3EnterConfirm();
-      return;
-    }
-
-    const rulesBookOpenTarget = event.target.closest('[data-role="rules-book-open"]');
-    if (rulesBookOpenTarget) {
-      openRulesModal(getRuleTopicByKey(activeRuleTabKey), { forceTabbed: true, ruleKey: activeRuleTabKey });
-      return;
-    }
-
-    const topicButton = event.target.closest('[data-rule-topic]');
-    if (topicButton) {
-      const topic = topicButton.dataset.ruleTopic || topicButton.textContent?.trim() || '占쏙옙칙';
-      openRulesModal(topic);
-    }
-  });
+  stop() {
+    this.audio.pause();
+    this.audio.src = '';
+    this.currentTrack = '';
+  }
 }
-
-pageTotal.textContent = String(slides.length);
 
 class TimerManager {
   constructor() {
@@ -631,9 +377,7 @@ class TimerManager {
     if (this.activeWidget && this.activeWidget !== widget) {
       this.activeWidget.pause();
     }
-
     this.activeWidget = widget;
-
     if (!this.intervalId) {
       this.intervalId = setInterval(() => this.tick(), 250);
     }
@@ -643,9 +387,7 @@ class TimerManager {
     if (this.activeWidget !== widget) {
       return;
     }
-
     this.activeWidget = null;
-
     if (this.intervalId) {
       clearInterval(this.intervalId);
       this.intervalId = null;
@@ -653,19 +395,13 @@ class TimerManager {
   }
 
   tick() {
-    if (!this.activeWidget) {
-      return;
+    if (this.activeWidget) {
+      this.activeWidget.onTick();
     }
-
-    this.activeWidget.onTick();
   }
 
   pauseIfSlideChanged(activeSlide) {
-    if (!this.activeWidget) {
-      return;
-    }
-
-    if (this.activeWidget.slideEl !== activeSlide) {
+    if (this.activeWidget && this.activeWidget.slideEl !== activeSlide) {
       this.activeWidget.pause();
     }
   }
@@ -678,17 +414,16 @@ class TimerManager {
 }
 
 class TimerWidget {
-  constructor(rootEl, manager) {
+  constructor(rootEl, manager, openConfirmModal) {
     this.rootEl = rootEl;
     this.manager = manager;
+    this.openConfirmModal = openConfirmModal;
     this.slideEl = rootEl.closest('.slide');
-
     this.displayEl = rootEl.querySelector('[data-role="display"]');
     this.overlayEl = rootEl.querySelector('[data-role="overlay"]');
     this.minusBtn = rootEl.querySelector('[data-role="minus"]');
     this.plusBtn = rootEl.querySelector('[data-role="plus"]');
     this.toggleBtn = rootEl.querySelector('[data-role="toggle"]');
-
     this.remainingSeconds = Number.parseInt(rootEl.dataset.initialSeconds || '0', 10);
     this.endAtMs = null;
 
@@ -698,7 +433,7 @@ class TimerWidget {
   }
 
   bindEvents() {
-    this.toggleBtn.addEventListener('click', () => {
+    this.toggleBtn?.addEventListener('click', () => {
       if (this.endAtMs) {
         this.pause();
       } else {
@@ -706,29 +441,23 @@ class TimerWidget {
       }
     });
 
-    this.plusBtn.addEventListener('click', () => {
-      this.adjustRemainingSeconds(60);
-    });
-
-    this.minusBtn.addEventListener('click', () => {
+    this.plusBtn?.addEventListener('click', () => this.adjustRemainingSeconds(60));
+    this.minusBtn?.addEventListener('click', () => {
       if (this.remainingSeconds <= 60) {
-        const message = '<strong class="confirm-primary-line">타이머를 종료</strong>하시겠습니까?<br><span class="confirm-warning-line">남은 시간이 즉시 00:00으로 변경됩니다.</span>';
-        openConfirmModal(message, () => {
-          this.finish();
-        });
+        const msg = '<strong class="confirm-primary-line">타이머를 종료</strong>하시겠습니까?<br><span class="confirm-warning-line">남은 시간이 즉시 00:00으로 변경됩니다.</span>';
+        this.openConfirmModal(msg, () => this.finish());
         return;
       }
-
       this.adjustRemainingSeconds(-60);
     });
   }
 
-  adjustRemainingSeconds(deltaSeconds) {
+  adjustRemainingSeconds(delta) {
     this.hideOverlay();
-    this.remainingSeconds = Math.max(0, this.remainingSeconds + deltaSeconds);
+    this.remainingSeconds = Math.max(0, this.remainingSeconds + delta);
 
     if (this.endAtMs) {
-      this.endAtMs += deltaSeconds * 1000;
+      this.endAtMs += delta * 1000;
       if (this.endAtMs <= Date.now()) {
         this.finish();
         return;
@@ -750,7 +479,9 @@ class TimerWidget {
   }
 
   render() {
-    this.displayEl.textContent = this.formatTime(Math.max(0, this.remainingSeconds));
+    if (this.displayEl) {
+      this.displayEl.textContent = this.formatTime(Math.max(0, this.remainingSeconds));
+    }
   }
 
   setRunningState(isRunning) {
@@ -763,11 +494,11 @@ class TimerWidget {
   }
 
   hideOverlay() {
-    this.overlayEl.classList.add('hidden');
+    this.overlayEl?.classList.add('hidden');
   }
 
   showOverlay() {
-    this.overlayEl.classList.remove('hidden');
+    this.overlayEl?.classList.remove('hidden');
   }
 
   play() {
@@ -775,7 +506,6 @@ class TimerWidget {
       this.finish();
       return;
     }
-
     this.hideOverlay();
     this.endAtMs = Date.now() + this.remainingSeconds * 1000;
     this.manager.start(this);
@@ -787,7 +517,6 @@ class TimerWidget {
       const diffMs = this.endAtMs - Date.now();
       this.remainingSeconds = Math.max(0, Math.ceil(diffMs / 1000));
     }
-
     this.endAtMs = null;
     this.manager.stop(this);
     this.setRunningState(false);
@@ -818,324 +547,757 @@ class TimerWidget {
     }
   }
 }
-const timerManager = new TimerManager();
-const timerWidgets = Array.from(document.querySelectorAll('[data-timer-widget]'))
-  .map((el) => new TimerWidget(el, timerManager));
-
-let currentIndex = 0;
-function decorateStoryText() {
-  const storyTextEl = document.querySelector('.story-slide .scrollable-text');
-  if (!storyTextEl) {
-    return;
+class RulesModal {
+  constructor(modalEl, titleEl, bodyEl, tabsEl) {
+    this.modalEl = modalEl;
+    this.titleEl = titleEl;
+    this.bodyEl = bodyEl;
+    this.tabsEl = tabsEl;
+    this.ruleTabs = [];
+    this.activeRuleTabKey = 'P';
+    this.contentMap = BUNGA_RULE_CONTENT_MAP;
+    this.tabConfig = [
+      { key: 'P', label: '능력과 파워' },
+      { key: 'S', label: '승점' },
+      { key: 'R', label: '전체' },
+    ];
   }
 
-  const nameClassMap = {
-    '[수집가]': 'story-name-collector',
-    '[영매 소녀]': 'story-name-medium',
-    '[정신과의]': 'story-name-psychiatrist',
-    '[저택 주인 아들]': 'story-name-son',
-    '[건축가]': 'story-name-architect',
-    '[신문 기자]': 'story-name-reporter',
-  };
+  configure(game) {
+    this.tabConfig = Array.isArray(game?.rules?.tabs) && game.rules.tabs.length > 0
+      ? game.rules.tabs
+      : this.tabConfig;
+    this.contentMap = game?.rules?.source === 'bunga' ? BUNGA_RULE_CONTENT_MAP : BUNGA_RULE_CONTENT_MAP;
+    this.renderTabs();
+    this.activeRuleTabKey = this.tabConfig[0]?.key || 'P';
+  }
 
-  let html = storyTextEl.innerHTML;
-  html = html.replace(/신문 기사/g, '신문 기자');
+  renderTabs() {
+    this.tabsEl.innerHTML = '';
+    this.ruleTabs = this.tabConfig.map((tab, idx) => {
+      const btn = document.createElement('button');
+      btn.className = `rules-modal-tab${idx === 0 ? ' active' : ''}`;
+      btn.type = 'button';
+      btn.setAttribute('role', 'tab');
+      btn.setAttribute('aria-selected', idx === 0 ? 'true' : 'false');
+      btn.dataset.role = 'modal-rule-tab';
+      btn.dataset.ruleKey = tab.key;
+      btn.textContent = tab.label;
+      this.tabsEl.appendChild(btn);
+      return btn;
+    });
+  }
 
-  Object.entries(nameClassMap).forEach(([name, className]) => {
-    const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const regex = new RegExp(escapedName, 'g');
-    html = html.replace(regex, `<span class="story-name ${className}">${name}</span>`);
-  });
+  setRuleTabState(activeKey) {
+    this.ruleTabs.forEach((button) => {
+      const isActive = button.dataset.ruleKey === activeKey;
+      button.classList.toggle('active', isActive);
+      button.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+  }
 
-  storyTextEl.innerHTML = html;
+  getRuleTopicByKey(ruleKey) {
+    return RULE_TAB_TOPIC_MAP[ruleKey] || '';
+  }
 
-  const paragraphs = Array.from(storyTextEl.querySelectorAll('p'));
-  paragraphs.forEach((p) => {
-    const text = (p.textContent || '').trim();
-    if (text.startsWith('「') && text.endsWith('」')) {
-      p.classList.add('story-dialogue');
+  renderRuleTab(ruleKey) {
+    const topic = this.getRuleTopicByKey(ruleKey);
+    if (!topic) {
+      return;
+    }
+    this.activeRuleTabKey = ruleKey;
+    this.titleEl.textContent = '규칙';
+    this.bodyEl.innerHTML = this.contentMap[topic] || '<p>규칙 텍스트는 차후 삽입 예정</p>';
+    this.setRuleTabState(ruleKey);
+  }
+
+  open(topic, options = {}) {
+    const tabKeyByTopic = Object.keys(RULE_TAB_TOPIC_MAP).find((key) => RULE_TAB_TOPIC_MAP[key] === topic) || '';
+    const forceTabbed = options.forceTabbed === true;
+    const useTabbedMode = forceTabbed || Boolean(tabKeyByTopic);
+
+    this.tabsEl.classList.toggle('hidden', !useTabbedMode);
+    if (useTabbedMode) {
+      const resolved = options.ruleKey || tabKeyByTopic || this.activeRuleTabKey || 'P';
+      this.renderRuleTab(resolved);
+    } else {
+      this.titleEl.textContent = topic;
+      this.bodyEl.innerHTML = this.contentMap[topic] || '<p>규칙 텍스트는 차후 삽입 예정</p>';
     }
 
-    if (text === '길고도 공포스러운 밤이, 이제 막 시작되려 하고 있었다.') {
-      p.classList.add('story-final-line');
-    }
-  });
+    this.modalEl.classList.remove('hidden');
+    this.modalEl.setAttribute('aria-hidden', 'false');
+  }
+
+  close() {
+    this.modalEl.classList.add('hidden');
+    this.modalEl.setAttribute('aria-hidden', 'true');
+  }
+
+  isOpen() {
+    return !this.modalEl.classList.contains('hidden');
+  }
 }
 
-function captureRuleRectMap(elements) {
-  const map = new Map();
-  elements.forEach((el) => {
-    const key = el.dataset.ruleKey;
-    if (!key) {
+class SlideRenderer {
+  constructor(options) {
+    this.slidesContainer = options.slidesContainer;
+    this.headerTitle = options.headerTitle;
+    this.pageNow = options.pageNow;
+    this.pageTotal = options.pageTotal;
+    this.headerPartInfoBtn = options.headerPartInfoBtn;
+    this.headerPartEndBtn = options.headerPartEndBtn;
+    this.headerPart2EndBtn = options.headerPart2EndBtn;
+    this.headerRulesBookBtn = options.headerRulesBookBtn;
+    this.rulesModal = options.rulesModal;
+    this.bgmController = options.bgmController;
+    this.openConfirmModal = options.openConfirmModal;
+
+    this.timerManager = new TimerManager();
+    this.timerWidgets = [];
+    this.slides = [];
+    this.currentIndex = 0;
+    this.part1StartIndex = 8;
+    this.part1EndIndex = 19;
+    this.part2StartIndex = 24;
+    this.part2EndIndex = 35;
+    this.touchStartX = 0;
+    this.touchStartY = 0;
+    this.touchFromScrollable = false;
+
+    this.boundKeydown = (event) => this.handleKeydown(event);
+    this.boundTouchStart = (event) => this.handleTouchStart(event);
+    this.boundTouchEnd = (event) => this.handleTouchEnd(event);
+    this.boundVisibility = () => this.timerManager.pauseOnTabHidden();
+  }
+
+  async loadGame(game) {
+    this.currentIndex = 0;
+
+    const slidesHtml = await fetch(game.slidesHtmlPath).then((res) => res.text());
+    const temp = document.createElement('div');
+    temp.innerHTML = slidesHtml;
+
+    const sectionEls = Array.from(temp.querySelectorAll('section.slide'));
+    this.slidesContainer.innerHTML = '';
+    this.slides = sectionEls.map((section, idx) => {
+      const node = section.cloneNode(true);
+      node.dataset.index = String(idx);
+      node.classList.remove('active');
+      this.slidesContainer.appendChild(node);
+      return node;
+    });
+
+    this.pageTotal.textContent = String(this.slides.length);
+    this.refreshPartRanges();
+    this.setupInlineRules();
+    this.setupTimers();
+    this.decorateStoryText();
+    this.renderSlide(0);
+    this.bindEvents();
+  }
+
+  refreshPartRanges() {
+    this.part1StartIndex = this.findSlideIndexByTitlePrefix('[파트 1] 라운드');
+    this.part1EndIndex = this.findLastSlideIndexByTitlePrefix('[파트 1] 라운드');
+    this.part2StartIndex = this.findSlideIndexByAnchor('part2-start');
+    this.part2EndIndex = this.findLastSlideIndexByTitlePrefix('[파트 2] 라운드');
+    if (this.part2StartIndex < 0) this.part2StartIndex = 20;
+    if (this.part2EndIndex < 0) this.part2EndIndex = 35;
+    if (this.part1StartIndex < 0) this.part1StartIndex = 8;
+    if (this.part1EndIndex < 0) this.part1EndIndex = 19;
+  }
+
+  findSlideIndexByAnchor(anchor) {
+    return this.slides.findIndex((slide) => slide.dataset.partAnchor === anchor);
+  }
+
+  findSlideIndexByTitlePrefix(prefix) {
+    return this.slides.findIndex((slide) => (slide.dataset.title || '').startsWith(prefix));
+  }
+
+  findLastSlideIndexByTitlePrefix(prefix) {
+    for (let i = this.slides.length - 1; i >= 0; i -= 1) {
+      if ((this.slides[i].dataset.title || '').startsWith(prefix)) return i;
+    }
+    return -1;
+  }
+
+  setupTimers() {
+    this.timerWidgets = Array.from(this.slidesContainer.querySelectorAll('[data-timer-widget]'))
+      .map((el) => new TimerWidget(el, this.timerManager, this.openConfirmModal));
+  }
+
+  setupInlineRules() {
+    const inlineBody = this.slidesContainer.querySelector('#rulesInlineBody');
+    if (!inlineBody) return;
+
+    const renderInline = (key) => {
+      const topic = RULE_TAB_TOPIC_MAP[key] || '';
+      if (!topic) return;
+      const tabs = Array.from(this.slidesContainer.querySelectorAll('[data-role="inline-rule-tab"]'));
+      tabs.forEach((btn) => {
+        const isActive = btn.dataset.ruleKey === key;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+      inlineBody.innerHTML = BUNGA_RULE_CONTENT_MAP[topic] || '<p>규칙 텍스트는 차후 삽입 예정</p>';
+      this.rulesModal.activeRuleTabKey = key;
+    };
+
+    renderInline('P');
+    this.slidesContainer.addEventListener('click', (event) => {
+      const target = event.target.closest('[data-role="inline-rule-tab"]');
+      if (!target) return;
+      const key = target.dataset.ruleKey;
+      if (key) renderInline(key);
+    });
+  }
+
+  decorateStoryText() {
+    const storyTextEl = this.slidesContainer.querySelector('.story-slide .scrollable-text');
+    if (!storyTextEl) return;
+
+    const nameClassMap = {
+      '[수집가]': 'story-name-collector',
+      '[영매 소녀]': 'story-name-medium',
+      '[정신과의]': 'story-name-psychiatrist',
+      '[저택 주인 아들]': 'story-name-son',
+      '[건축가]': 'story-name-architect',
+      '[신문 기자]': 'story-name-reporter',
+    };
+
+    let html = storyTextEl.innerHTML.replace(/신문 기사/g, '신문 기자');
+    Object.entries(nameClassMap).forEach(([name, className]) => {
+      const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      html = html.replace(new RegExp(escaped, 'g'), `<span class="story-name ${className}">${name}</span>`);
+    });
+    storyTextEl.innerHTML = html;
+
+    const paragraphs = Array.from(storyTextEl.querySelectorAll('p'));
+    paragraphs.forEach((p) => {
+      const text = (p.textContent || '').trim();
+      if (text.startsWith('「') && text.endsWith('」')) {
+        p.classList.add('story-dialogue');
+      }
+
+      if (text === '길고도 공포스러운 밤이, 이제 막 시작되려 하고 있었다.') {
+        p.classList.add('story-final-line');
+      }
+    });
+  }
+
+  bindEvents() {
+    window.removeEventListener('keydown', this.boundKeydown);
+    document.removeEventListener('visibilitychange', this.boundVisibility);
+    this.slidesContainer.removeEventListener('touchstart', this.boundTouchStart);
+    this.slidesContainer.removeEventListener('touchend', this.boundTouchEnd);
+
+    window.addEventListener('keydown', this.boundKeydown);
+    document.addEventListener('visibilitychange', this.boundVisibility);
+    this.slidesContainer.addEventListener('touchstart', this.boundTouchStart);
+    this.slidesContainer.addEventListener('touchend', this.boundTouchEnd);
+  }
+
+  isPart1Slide(index) {
+    return index >= this.part1StartIndex && index <= this.part1EndIndex;
+  }
+
+  isPart2Slide(index) {
+    return index >= this.part2StartIndex && index <= this.part2EndIndex;
+  }
+
+  extractPartActionTitle(title) {
+    return (title || '').replace(/^\[(?:Part|파트)\s*\d+\]\s*(?:\d+\s*(?:Round|Rount|라운드)|(?:Round|Rount|라운드)\s*\d+):\s*/i, '').trim();
+  }
+
+  extractPartRoundText(title) {
+    const text = title || '';
+    const matchNumberFirst = text.match(/^\[(?:Part|파트)\s*\d+\]\s*(\d+)\s*(?:Round|Rount|라운드):/i);
+    if (matchNumberFirst) return `라운드 ${matchNumberFirst[1]}`;
+    const matchWordFirst = text.match(/^\[(?:Part|파트)\s*\d+\]\s*(?:Round|Rount|라운드)\s*(\d+):/i);
+    return matchWordFirst ? `라운드 ${matchWordFirst[1]}` : '';
+  }
+
+  updateTimerActionLabel(slideEl, partInfoTitle) {
+    if (!slideEl) return;
+    const timerWidget = slideEl.querySelector('.timer-widget');
+    if (!timerWidget) return;
+
+    let roundEl = slideEl.querySelector('.timer-round-label');
+    let actionEl = slideEl.querySelector('.timer-action-label');
+    const roundText = this.extractPartRoundText(partInfoTitle);
+    const actionTitle = this.extractPartActionTitle(partInfoTitle);
+
+    if (!actionTitle) {
+      roundEl?.remove();
+      actionEl?.remove();
       return;
     }
 
-    map.set(key, {
-      label: (el.textContent || '').trim(),
-      rect: el.getBoundingClientRect(),
-    });
-  });
+    if (!roundEl) {
+      roundEl = document.createElement('h3');
+      roundEl.className = 'timer-round-label';
+      slideEl.insertBefore(roundEl, timerWidget);
+    }
 
-  return map;
-}
+    if (!actionEl) {
+      actionEl = document.createElement('h1');
+      actionEl.className = 'timer-action-label';
+      slideEl.insertBefore(actionEl, timerWidget);
+    }
 
-function buildHeroPairsToSingleTarget(sourceMap, targetElement) {
-  if (!targetElement) {
-    return [];
+    roundEl.textContent = roundText;
+    actionEl.textContent = actionTitle;
   }
 
-  const toRect = targetElement.getBoundingClientRect();
-  const pairs = [];
+  renderSlide(index) {
+    const boundedIndex = Math.max(0, Math.min(index, this.slides.length - 1));
+    this.slides.forEach((slide, i) => slide.classList.toggle('active', i === boundedIndex));
+    this.currentIndex = boundedIndex;
+    this.pageNow.textContent = String(boundedIndex + 1);
 
-  sourceMap.forEach((source, key) => {
-    pairs.push({
-      key,
-      label: source.label,
-      fromRect: source.rect,
-      toRect,
-      targetBtn: targetElement,
-    });
-  });
+    const currentSlide = this.slides[boundedIndex];
+    const title = currentSlide.dataset.title || '';
+    this.headerTitle.textContent = title;
 
-  return pairs;
-}
+    const partInfoTitle = currentSlide.dataset.partInfoTitle || '';
+    const partInfoTopic = currentSlide.dataset.partInfoTopic || '';
+    const showPartInfo = Boolean(partInfoTitle || partInfoTopic);
+    this.headerPartInfoBtn.classList.toggle('hidden', !showPartInfo);
+    this.headerPartInfoBtn.setAttribute('aria-hidden', showPartInfo ? 'false' : 'true');
 
-function buildHeroPairsFromRectToTargets(sourceRect, sourceLabel, targetElements) {
-  if (!sourceRect) {
-    return [];
+    this.headerPartEndBtn.classList.toggle('hidden', !this.isPart1Slide(boundedIndex));
+    this.headerPart2EndBtn.classList.toggle('hidden', !this.isPart2Slide(boundedIndex));
+    this.headerRulesBookBtn.style.display = boundedIndex >= 6 ? 'inline-flex' : 'none';
+
+    this.updateTimerActionLabel(currentSlide, partInfoTitle);
+    this.timerManager.pauseIfSlideChanged(currentSlide);
+    this.bgmController.updateBySlide(boundedIndex);
   }
 
-  return targetElements.map((targetElement, index) => ({
-    key: `${index}`,
-    label: sourceLabel,
-    fromRect: sourceRect,
-    toRect: targetElement.getBoundingClientRect(),
-    targetBtn: targetElement,
-  }));
-}
-
-function playRuleHero(pairs) {
-  if (!pairs || pairs.length === 0) {
-    return;
-  }
-
-  const layer = document.createElement('div');
-  layer.className = 'rule-hero-layer';
-  document.body.appendChild(layer);
-
-  const targetPendingCount = new Map();
-  pairs.forEach((pair) => {
-    targetPendingCount.set(pair.targetBtn, (targetPendingCount.get(pair.targetBtn) || 0) + 1);
-  });
-  targetPendingCount.forEach((_, targetElement) => {
-    targetElement.classList.add('rule-hero-hidden');
-  });
-
-  let doneCount = 0;
-  pairs.forEach((pair) => {
-    const chip = document.createElement('div');
-    chip.className = 'rule-hero-chip';
-    chip.textContent = pair.label;
-
-    chip.style.left = `${pair.fromRect.left}px`;
-    chip.style.top = `${pair.fromRect.top}px`;
-    chip.style.width = `${pair.fromRect.width}px`;
-    chip.style.height = `${pair.fromRect.height}px`;
-
-    layer.appendChild(chip);
-
-    requestAnimationFrame(() => {
-      const dx = pair.toRect.left - pair.fromRect.left;
-      const dy = pair.toRect.top - pair.fromRect.top;
-      const sx = pair.toRect.width / Math.max(pair.fromRect.width, 1);
-      const sy = pair.toRect.height / Math.max(pair.fromRect.height, 1);
-
-      chip.style.transform = `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`;
-      chip.style.opacity = '0.9';
-    });
-
-    chip.addEventListener('transitionend', () => {
-      chip.remove();
-      const currentPending = targetPendingCount.get(pair.targetBtn) || 0;
-      const nextPending = Math.max(0, currentPending - 1);
-      targetPendingCount.set(pair.targetBtn, nextPending);
-      if (nextPending === 0) {
-        pair.targetBtn.classList.remove('rule-hero-hidden');
-      }
-      doneCount += 1;
-      if (doneCount === pairs.length) {
-        layer.remove();
-      }
-    }, { once: true });
-  });
-}
-
-function renderSlide(index) {
-  const previousIndex = currentIndex;
-
-  const isHeroUp = previousIndex === 5 && index === 6;
-  const isHeroDown = previousIndex === 6 && index === 5;
-  let sourceMap = null;
-  let bookHeroSourceRect = null;
-  let bookHeroSourceLabel = '규칙';
-
-  if (isHeroUp) {
-    const sourceButtons = Array.from(slides[5].querySelectorAll('[data-role="inline-rule-tab"]'));
-    sourceMap = captureRuleRectMap(sourceButtons);
-  }
-
-  if (isHeroDown && headerRulesBookBtn) {
-    bookHeroSourceRect = headerRulesBookBtn.getBoundingClientRect();
-    bookHeroSourceLabel = (headerRulesBookBtn.getAttribute('aria-label') || '규칙').trim();
-  }
-
-  slides.forEach((slide, i) => {
-    slide.classList.toggle('active', i === index);
-  });
-
-  currentIndex = index;
-  pageNow.textContent = String(index + 1);
-
-    const titleText = slides[index].dataset.title || slides[index].querySelector('h1')?.textContent;
-  const partInfoTitle = slides[index].dataset.partInfoTitle || '';
-  updateTimerActionLabel(slides[index], partInfoTitle);
-
-  if (headerPartInfoBtn) {
-    const showPartInfo = Boolean(slides[index]?.dataset.partInfoTitle || slides[index]?.dataset.partInfoTopic);
-    headerPartInfoBtn.classList.toggle('hidden', !showPartInfo);
-    headerPartInfoBtn.setAttribute('aria-hidden', showPartInfo ? 'false' : 'true');
-  }
-  
-
-  if (headerPartEndBtn) {
-    const showPartEndButton = isPart1Slide(index);
-    headerPartEndBtn.classList.toggle('hidden', !showPartEndButton);
-  }
-
-  if (headerPart2EndBtn) {
-    const showPart2EndButton = isPart2Slide(index);
-    headerPart2EndBtn.classList.toggle('hidden', !showPart2EndButton);
-  }
-
-  if (headerRulesBookBtn) {
-    headerRulesBookBtn.style.display = index >= 6 ? 'inline-flex' : 'none';
-  }
-  if (titleText && headerTitle) {
-    headerTitle.textContent = titleText;
-  }
-
-  timerManager.pauseIfSlideChanged(slides[index]);
-
-  if ((sourceMap && isHeroUp) || (bookHeroSourceRect && isHeroDown)) {
-    requestAnimationFrame(() => {
-      let pairs = [];
-      if (isHeroUp && sourceMap && headerRulesBookBtn) {
-        pairs = buildHeroPairsToSingleTarget(sourceMap, headerRulesBookBtn);
-      }
-      if (isHeroDown && bookHeroSourceRect) {
-        const targetTabs = Array.from(slides[5].querySelectorAll('[data-role="inline-rule-tab"]'));
-        pairs = buildHeroPairsFromRectToTargets(bookHeroSourceRect, bookHeroSourceLabel, targetTabs);
-      }
-      playRuleHero(pairs);
+  openPart2EnterConfirm() {
+    const message = '<strong class="confirm-primary-line">이야기 카드 A</strong>가 공개되었습니까?<br><span class="confirm-warning-line">파트 2</span>로 진입합니다.';
+    this.openConfirmModal(message, () => {
+      if (this.part2StartIndex >= 0) this.renderSlide(this.part2StartIndex);
     });
   }
-}
-function goPrev() {
-  if (currentIndex > 0) {
-    renderSlide(currentIndex - 1);
+
+  openPart3EnterConfirm() {
+    const target = this.findSlideIndexByAnchor('part3-start');
+    const message = '<strong class="confirm-primary-line">이야기 카드 B</strong>가 공개되었습니까?<br><span class="confirm-warning-line">파트 3</span>로 진입합니다.';
+    this.openConfirmModal(message, () => {
+      if (target >= 0) this.renderSlide(target);
+    });
+  }
+
+  goPrev() {
+    this.renderSlide(this.currentIndex - 1);
+  }
+
+  goNext() {
+    if (this.currentIndex === this.part1EndIndex) {
+      this.openPart2EnterConfirm();
+      return;
+    }
+    if (this.currentIndex === this.part2EndIndex) {
+      this.openPart3EnterConfirm();
+      return;
+    }
+    this.renderSlide(this.currentIndex + 1);
+  }
+
+  handleKeydown(event) {
+    if (event.key === 'ArrowLeft') this.goPrev();
+    if (event.key === 'ArrowRight') this.goNext();
+  }
+
+  handleTouchStart(event) {
+    const touch = event.changedTouches[0];
+    this.touchStartX = touch.screenX;
+    this.touchStartY = touch.screenY;
+    this.touchFromScrollable = Boolean(event.target.closest('.scrollable-text'));
+  }
+
+  handleTouchEnd(event) {
+    if (this.touchFromScrollable) {
+      this.touchFromScrollable = false;
+      return;
+    }
+    const touch = event.changedTouches[0];
+    const diffX = this.touchStartX - touch.screenX;
+    const diffY = this.touchStartY - touch.screenY;
+    if (Math.abs(diffX) < 50 || Math.abs(diffX) <= Math.abs(diffY)) return;
+    if (diffX > 0) this.goNext();
+    else this.goPrev();
   }
 }
 
-function goNext() {
-  if (currentIndex === PART1_END_INDEX) {
-    openPart2EnterConfirm();
-    return;
+class MultiGameApp {
+  constructor() {
+    this.state = {
+      games: [],
+      selectedGameId: null,
+      sort: 'name',
+      query: '',
+      pendingConfirmAction: null,
+    };
+
+    this.catalogView = document.getElementById('catalogView');
+    this.detailView = document.getElementById('detailView');
+    this.gmView = document.getElementById('gmView');
+    this.gameListEl = document.getElementById('gameList');
+    this.gameSearchInput = document.getElementById('gameSearchInput');
+    this.gameSortSelect = document.getElementById('gameSortSelect');
+
+    this.detailTitle = document.getElementById('detailTitle');
+    this.detailPrequel = document.getElementById('detailPrequel');
+    this.detailPlayers = document.getElementById('detailPlayers');
+    this.detailBoxImage = document.getElementById('detailBoxImage');
+    this.detailImageFallback = document.getElementById('detailImageFallback');
+    this.detailCopyright = document.getElementById('detailCopyright');
+    this.gmCopyright = document.getElementById('gmCopyright');
+
+    this.confirmModal = document.getElementById('confirmModal');
+    this.confirmModalMessage = document.getElementById('confirmModalMessage');
+    this.npcModal = document.getElementById('npcModal');
+
+    this.rulesModal = new RulesModal(
+      document.getElementById('rulesModal'),
+      document.getElementById('rulesModalTitle'),
+      document.getElementById('rulesModalBody'),
+      document.getElementById('rulesModalTabs'),
+    );
+
+    this.bgmController = new BGMController(
+      document.getElementById('bgmPanel'),
+      document.getElementById('bgmMuteBtn'),
+      document.getElementById('bgmVolumeRange'),
+    );
+
+    this.slideRenderer = new SlideRenderer({
+      slidesContainer: document.getElementById('slidesContainer'),
+      headerTitle: document.getElementById('headerTitle'),
+      pageNow: document.getElementById('pageNow'),
+      pageTotal: document.getElementById('pageTotal'),
+      headerPartInfoBtn: document.getElementById('headerPartInfoBtn'),
+      headerPartEndBtn: document.getElementById('headerPartEndBtn'),
+      headerPart2EndBtn: document.getElementById('headerPart2EndBtn'),
+      headerRulesBookBtn: document.getElementById('headerRulesBookBtn'),
+      rulesModal: this.rulesModal,
+      bgmController: this.bgmController,
+      openConfirmModal: (message, onConfirm) => this.openConfirmModal(message, onConfirm),
+    });
+
+    this.viewportGuard = new ViewportGuard(document.getElementById('orientationGuard'));
+    this.adSlotManager = new AdSlotManager();
   }
 
-  if (currentIndex === PART2_END_INDEX) {
-    openPart3EnterConfirm();
-    return;
+  async init() {
+    this.viewportGuard.init();
+    this.adSlotManager.render();
+    this.bindGlobalEvents();
+    await this.loadGames();
+    this.renderCatalog();
+    await this.applyRouteFromHash();
   }
 
-  if (currentIndex < slides.length - 1) {
-    renderSlide(currentIndex + 1);
+  async loadGames() {
+    const response = await fetch('data/games.json');
+    const data = await response.json();
+    this.state.games = Array.isArray(data.games) ? data.games : [];
+  }
+
+  get selectedGame() {
+    return this.state.games.find((game) => game.id === this.state.selectedGameId) || null;
+  }
+
+  bindGlobalEvents() {
+    this.gameSearchInput.addEventListener('input', () => {
+      this.state.query = this.gameSearchInput.value.trim().toLowerCase();
+      this.renderCatalog();
+    });
+
+    this.gameSortSelect.addEventListener('change', () => {
+      this.state.sort = this.gameSortSelect.value;
+      this.renderCatalog();
+    });
+
+    document.getElementById('detailBackBtn').addEventListener('click', () => this.navigateToCatalog());
+    document.getElementById('enterGameBtn').addEventListener('click', () => {
+      if (this.selectedGame) {
+        this.navigateToGameGm(this.selectedGame.id);
+      }
+    });
+    document.getElementById('prevBtn').addEventListener('click', () => this.slideRenderer.goPrev());
+    document.getElementById('nextBtn').addEventListener('click', () => this.slideRenderer.goNext());
+
+    document.addEventListener('click', (event) => {
+      const gameCard = event.target.closest('[data-role="game-open"]');
+      if (gameCard) {
+        const gameId = gameCard.dataset.gameId;
+        if (gameId) this.navigateToGameDetail(gameId);
+        return;
+      }
+
+      const modalRuleTabTarget = event.target.closest('[data-role="modal-rule-tab"]');
+      if (modalRuleTabTarget) {
+        this.rulesModal.renderRuleTab(modalRuleTabTarget.dataset.ruleKey);
+        return;
+      }
+
+      if (event.target.closest('[data-role="rules-modal-close"]')) {
+        this.rulesModal.close();
+        return;
+      }
+      if (event.target.closest('[data-role="npc-modal-close"]')) {
+        this.closeNpcModal();
+        return;
+      }
+      if (event.target.closest('[data-role="confirm-cancel"]')) {
+        this.closeConfirmModal();
+        return;
+      }
+      if (event.target.closest('[data-role="confirm-ok"]')) {
+        this.submitConfirmModal();
+        return;
+      }
+
+      if (event.target.closest('[data-role="npc-open"]')) {
+        this.openConfirmModal('NPC 캐릭터가 공개됩니다.', () => this.openNpcModal());
+        return;
+      }
+
+      if (event.target.closest('[data-role="part-info-open"]')) {
+        const activeSlide = this.slideRenderer.slides[this.slideRenderer.currentIndex];
+        const topic = activeSlide?.dataset.partInfoTopic || this.slideRenderer.extractPartActionTitle(activeSlide?.dataset.partInfoTitle || '');
+        if (topic) this.rulesModal.open(topic);
+        return;
+      }
+
+      if (event.target.closest('[data-role="part-end-open"]')) {
+        this.slideRenderer.openPart2EnterConfirm();
+        return;
+      }
+      if (event.target.closest('[data-role="part2-end-open"]')) {
+        this.slideRenderer.openPart3EnterConfirm();
+        return;
+      }
+      if (event.target.closest('[data-role="rules-book-open"]')) {
+        const activeKey = this.rulesModal.activeRuleTabKey || 'P';
+        const topic = RULE_TAB_TOPIC_MAP[activeKey] || '규칙';
+        this.rulesModal.open(topic, { forceTabbed: true, ruleKey: activeKey });
+        return;
+      }
+
+      const topicButton = event.target.closest('[data-rule-topic]');
+      if (topicButton) {
+        const topic = topicButton.dataset.ruleTopic || topicButton.textContent?.trim() || '규칙';
+        this.rulesModal.open(topic);
+      }
+    });
+
+    window.addEventListener('hashchange', () => {
+      this.applyRouteFromHash().catch(() => {});
+    });
+  }
+
+  getRouteNameForGame(game) {
+    if (!game) {
+      return '';
+    }
+    if (game.routeName) {
+      return game.routeName;
+    }
+    if (game.id === 'bunga') {
+      return 'hunke';
+    }
+    return game.id;
+  }
+
+  getGameByRouteName(routeName) {
+    return this.state.games.find((game) => this.getRouteNameForGame(game) === routeName) || null;
+  }
+
+  navigateToHash(nextHash) {
+    if (window.location.hash === nextHash) {
+      this.applyRouteFromHash().catch(() => {});
+      return;
+    }
+    window.location.hash = nextHash;
+  }
+
+  navigateToCatalog() {
+    this.navigateToHash('#/games');
+  }
+
+  navigateToGameDetail(gameId) {
+    const game = this.state.games.find((item) => item.id === gameId);
+    if (!game) {
+      this.navigateToCatalog();
+      return;
+    }
+    this.navigateToHash(`#/games/${this.getRouteNameForGame(game)}`);
+  }
+
+  navigateToGameGm(gameId) {
+    const game = this.state.games.find((item) => item.id === gameId);
+    if (!game) {
+      this.navigateToCatalog();
+      return;
+    }
+    this.navigateToHash(`#/games/${this.getRouteNameForGame(game)}/gm`);
+  }
+
+  async applyRouteFromHash() {
+    const raw = window.location.hash.replace(/^#\/?/, '');
+    if (!raw) {
+      this.navigateToCatalog();
+      return;
+    }
+
+    const parts = raw.split('/').filter(Boolean);
+    if (parts[0] !== 'games') {
+      this.navigateToCatalog();
+      return;
+    }
+
+    if (parts.length === 1) {
+      this.setView('catalog');
+      return;
+    }
+
+    const routeName = parts[1];
+    const game = this.getGameByRouteName(routeName);
+    if (!game) {
+      this.navigateToCatalog();
+      return;
+    }
+
+    if (parts.length === 2) {
+      this.openGameDetail(game.id);
+      return;
+    }
+
+    if (parts.length === 3 && parts[2] === 'gm') {
+      this.state.selectedGameId = game.id;
+      await this.enterGame();
+      return;
+    }
+
+    this.navigateToCatalog();
+  }
+
+  openConfirmModal(message, onConfirm) {
+    this.confirmModalMessage.innerHTML = message;
+    this.state.pendingConfirmAction = typeof onConfirm === 'function' ? onConfirm : null;
+    this.confirmModal.classList.remove('hidden');
+    this.confirmModal.setAttribute('aria-hidden', 'false');
+  }
+
+  closeConfirmModal() {
+    this.confirmModal.classList.add('hidden');
+    this.confirmModal.setAttribute('aria-hidden', 'true');
+    this.state.pendingConfirmAction = null;
+  }
+
+  submitConfirmModal() {
+    const action = this.state.pendingConfirmAction;
+    this.closeConfirmModal();
+    if (typeof action === 'function') action();
+  }
+
+  openNpcModal() {
+    this.npcModal.classList.remove('hidden');
+    this.npcModal.setAttribute('aria-hidden', 'false');
+  }
+
+  closeNpcModal() {
+    this.npcModal.classList.add('hidden');
+    this.npcModal.setAttribute('aria-hidden', 'true');
+  }
+
+  setView(view) {
+    const platformTitle = document.getElementById('platformTitle');
+    const platformSubtitle = document.getElementById('platformSubtitle');
+
+    this.catalogView.classList.toggle('hidden', view !== 'catalog');
+    this.detailView.classList.toggle('hidden', view !== 'detail');
+    this.gmView.classList.toggle('hidden', view !== 'gm');
+
+    const isGmView = view === 'gm';
+    platformTitle?.classList.toggle('hidden', isGmView);
+    platformSubtitle?.classList.toggle('hidden', isGmView);
+  }
+
+  getSortedGames() {
+    const query = this.state.query;
+    const filtered = this.state.games.filter((game) => game.name.toLowerCase().includes(query));
+    if (this.state.sort === 'players') {
+      return filtered.sort((a, b) => (a.playerMin - b.playerMin) || a.name.localeCompare(b.name, 'ko'));
+    }
+    return filtered.sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+  }
+
+  renderCatalog() {
+    const games = this.getSortedGames();
+    this.gameListEl.innerHTML = '';
+
+    if (games.length === 0) {
+      this.gameListEl.innerHTML = '<p class="empty-message">검색 결과가 없습니다.</p>';
+      return;
+    }
+
+    games.forEach((game) => {
+      const card = document.createElement('article');
+      card.className = 'game-card';
+      card.dataset.role = 'game-open';
+      card.dataset.gameId = game.id;
+      card.innerHTML = `
+        <h3>${game.name}</h3>
+        <p>인원: ${game.playerMin}~${game.playerMax}인</p>
+        <button type="button" data-role="game-open" data-game-id="${game.id}">게임 열기</button>
+      `;
+      this.gameListEl.appendChild(card);
+    });
+  }
+
+  openGameDetail(gameId) {
+    this.state.selectedGameId = gameId;
+    const game = this.selectedGame;
+    if (!game) return;
+
+    this.detailTitle.textContent = game.name;
+    this.detailPrequel.textContent = game.prequel || '';
+    this.detailPlayers.textContent = `추천 인원: ${game.recommendedPlayers || `${game.playerMin}~${game.playerMax}인`}`;
+    this.detailCopyright.textContent = game.copyrightNotice || '';
+
+    if (game.boxImage) {
+      this.detailBoxImage.src = game.boxImage;
+      this.detailBoxImage.classList.remove('hidden');
+      this.detailImageFallback.classList.add('hidden');
+    } else {
+      this.detailBoxImage.classList.add('hidden');
+      this.detailImageFallback.classList.remove('hidden');
+    }
+
+    this.setView('detail');
+  }
+
+  async enterGame() {
+    const game = this.selectedGame;
+    if (!game) return;
+
+    this.rulesModal.configure(game);
+    await this.slideRenderer.loadGame(game);
+    this.bgmController.applyGame(game);
+    this.bgmController.updateBySlide(0);
+    this.bgmController.startOnUserGesture();
+    this.gmCopyright.textContent = game.copyrightNotice || '';
+    this.setView('gm');
   }
 }
 
-prevBtn.addEventListener('click', goPrev);
-nextBtn.addEventListener('click', goNext);
+const app = new MultiGameApp();
+app.init();
 
-window.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape' && isAnyModalOpen()) {
-    closeRulesModal();
-    closeNpcModal();
-    closeConfirmModal();
-    return;
-  }
-
-  if (isAnyModalOpen()) {
-    return;
-  }
-  if (event.key === 'ArrowLeft') {
-    goPrev();
-  }
-
-  if (event.key === 'ArrowRight') {
-    goNext();
-  }
-});
-
-let touchStartX = 0;
-let touchStartY = 0;
-let touchEndX = 0;
-let touchEndY = 0;
-let touchFromScrollable = false;
-
-slidesContainer.addEventListener('touchstart', (event) => {
-  if (isAnyModalOpen()) {
-    return;
-  }
-  const touch = event.changedTouches[0];
-  touchStartX = touch.screenX;
-  touchStartY = touch.screenY;
-  touchFromScrollable = Boolean(event.target.closest('.scrollable-text'));
-});
-
-slidesContainer.addEventListener('touchend', (event) => {
-  if (isAnyModalOpen()) {
-    return;
-  }
-  if (touchFromScrollable) {
-    touchFromScrollable = false;
-    return;
-  }
-
-  const touch = event.changedTouches[0];
-  touchEndX = touch.screenX;
-  touchEndY = touch.screenY;
-  const diffX = touchStartX - touchEndX;
-  const diffY = touchStartY - touchEndY;
-
-  if (Math.abs(diffX) < 50 || Math.abs(diffX) <= Math.abs(diffY)) {
-    return;
-  }
-
-  if (diffX > 0) {
-    goNext();
-  } else {
-    goPrev();
-  }
-});
-
-document.addEventListener('visibilitychange', () => {
-  timerManager.pauseOnTabHidden();
-});
-
-decorateStoryText();
-setupRulesModal();
-renderInlineRules(activeRuleTabKey);
-closeRulesModal();
-closeNpcModal();
-closeConfirmModal();
-document.body.classList.remove('modal-open');
-renderSlide(0);

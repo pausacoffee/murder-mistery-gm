@@ -1,4 +1,215 @@
 ﻿:root {
+:root {
+  --platform-card-bg: #ffffff;
+}
+
+.platform-shell {
+  min-height: 100vh;
+  padding: 20px;
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.side-ad {
+  position: fixed;
+  top: 88px;
+  z-index: 5;
+  width: 160px;
+}
+
+.side-ad-left {
+  left: max(10px, calc((100vw - min(1200px, 96vw)) / 2 - 176px));
+}
+
+.side-ad-right {
+  right: max(10px, calc((100vw - min(1200px, 96vw)) / 2 - 176px));
+}
+
+.platform-header {
+  width: min(1200px, 96vw);
+  margin: 0 auto;
+}
+
+.platform-title {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.platform-subtitle {
+  margin: 4px 0 0;
+  color: #4e5e74;
+  font-weight: 700;
+}
+
+.view-card {
+  width: min(1200px, 96vw);
+  margin: 0 auto;
+  background: var(--platform-card-bg);
+  border: 1px solid #d8dee8;
+  border-radius: 16px;
+  padding: 18px;
+}
+
+.toolbar-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.search-input,
+.sort-select {
+  border: 1px solid #c5cfdd;
+  border-radius: 10px;
+  min-height: 42px;
+  padding: 0 12px;
+  font-size: 1rem;
+}
+
+.search-input {
+  flex: 1 1 240px;
+}
+
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.game-card {
+  border: 1px solid #d5dfed;
+  border-radius: 12px;
+  padding: 12px;
+  background: #f8fbff;
+}
+
+.game-card h3 {
+  margin: 0 0 8px;
+}
+
+.game-card p {
+  margin: 0 0 12px;
+}
+
+.empty-message {
+  margin: 8px 0;
+  color: #516278;
+}
+
+.detail-header-row {
+  margin-bottom: 12px;
+}
+
+#detailBackBtn {
+  background: #173f7a;
+  color: #ffffff;
+  border: 2px solid #173f7a;
+}
+
+#detailBackBtn:hover {
+  background: #0f2d58;
+}
+
+.detail-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 320px) 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.detail-image-wrap {
+  min-height: 220px;
+}
+
+.detail-image {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid #d2ddeb;
+}
+
+.detail-image-fallback {
+  border: 2px dashed #b0bfd5;
+  border-radius: 12px;
+  min-height: 220px;
+  display: grid;
+  place-items: center;
+  color: #586a84;
+  background: #f2f7ff;
+}
+
+.detail-content h2 {
+  margin-top: 0;
+}
+
+#enterGameBtn {
+  background: #0e5f3a;
+  color: #ffffff;
+  border: 2px solid #0e5f3a;
+}
+
+#enterGameBtn:hover {
+  background: #0a452a;
+}
+
+.detail-prequel {
+  line-height: 1.7;
+}
+
+.detail-players {
+  font-weight: 800;
+}
+
+.copyright-text {
+  margin: 10px 0 0;
+  color: #526073;
+  font-size: 0.92rem;
+}
+
+.ad-slot {
+  border: 1px dashed #b9c8de;
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  color: #52688a;
+  background: #f5f9ff;
+  min-height: 600px;
+  display: grid;
+  place-items: center;
+}
+
+.bgm-panel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  border: 1px solid #d3dbe7;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.bgm-btn {
+  min-width: 84px;
+  padding: 6px 10px;
+}
+
+.orientation-guard {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(8, 13, 22, 0.94);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 24px;
+}
+
+.orientation-guard h2 {
+  margin: 0 0 10px;
+}
+
+:root {
   --frame-bg: #ffffff;
   --accent: #1f5fbf;
   --accent-strong: #174a95;
@@ -120,6 +331,21 @@ button:disabled {
   padding: 7px 0;
 }
 
+#prevBtn,
+#nextBtn {
+  min-width: 42px;
+  min-height: 36px;
+  background: #0f1e33;
+  color: #ffffff;
+  border: 2px solid #0f1e33;
+  font-size: 1.05rem;
+}
+
+#prevBtn:hover,
+#nextBtn:hover {
+  background: #050c17;
+}
+
 .slides-container {
   position: relative;
   height: 100%;
@@ -142,7 +368,7 @@ button:disabled {
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 0;
 }
 
 .node {
@@ -156,9 +382,37 @@ button:disabled {
 }
 
 .arrow {
-  color: var(--muted);
-  font-size: 22px;
-  font-weight: 700;
+  position: relative;
+  width: 34px;
+  height: 16px;
+  flex: 0 0 34px;
+  margin: 0 -1px;
+  color: transparent;
+  font-size: 0;
+}
+
+.arrow::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 26px;
+  height: 2px;
+  background: #7b8595;
+  transform: translateY(-50%);
+}
+
+.arrow::after {
+  content: "";
+  position: absolute;
+  right: 2px;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 8px solid #7b8595;
+  transform: translateY(-50%);
 }
 
 .content-list {
@@ -484,7 +738,7 @@ button:disabled {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 0;
 }
 
 .part3-flow-btn {
@@ -513,9 +767,37 @@ button:disabled {
 }
 
 .part3-flow-arrow {
-  font-size: 1.45rem;
-  color: #7b8595;
-  line-height: 1;
+  position: relative;
+  width: 16px;
+  height: 28px;
+  flex: 0 0 28px;
+  margin: -1px 0;
+  color: transparent;
+  font-size: 0;
+}
+
+.part3-flow-arrow::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 2px;
+  height: 20px;
+  background: #7b8595;
+  transform: translateX(-50%);
+}
+
+.part3-flow-arrow::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 8px solid #7b8595;
+  transform: translateX(-50%);
 }
 
 .part3-phase-subtitle {
@@ -598,7 +880,7 @@ button:disabled {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 0;
 }
 
 .part1-order-btn {
@@ -617,9 +899,37 @@ button:disabled {
 }
 
 .part1-order-arrow {
-  font-size: 1.5rem;
-  color: #7b8595;
-  line-height: 1;
+  position: relative;
+  width: 16px;
+  height: 28px;
+  flex: 0 0 28px;
+  margin: -2px 0;
+  color: transparent;
+  font-size: 0;
+}
+
+.part1-order-arrow::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 2px;
+  height: 20px;
+  background: #7b8595;
+  transform: translateX(-50%);
+}
+
+.part1-order-arrow::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 8px solid #7b8595;
+  transform: translateX(-50%);
 }
 
 .timer-slide.active {
@@ -666,27 +976,40 @@ button:disabled {
 .timer-adjust-btn {
   min-width: 58px;
   height: 48px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  line-height: 1;
   border-radius: 12px;
-  background: #dcdbdb;
+  background: #cfd5de;
   color: #ffffff;
-  font-size: 2.05rem;
+  font-size: 1.8rem;
+  font-weight: 800;
 }
 
 .timer-adjust-btn:hover {
-  background: #000000;
+  background: #b9c2cf;
 }
 
 .timer-toggle-btn {
   min-width: 180px;
   height: 48px;
   border-radius: 999px;
-  background: #1f5fbf;
+  background: #c22626;
   color: #ffffff;
   font-size: 1rem;
+  border: 2px solid #c22626;
+}
+
+.timer-toggle-btn:hover {
+  background: #8f1717;
+  border-color: #8f1717;
 }
 
 .timer-toggle-btn[aria-pressed="true"] {
-  background: #1a3f78;
+  background: #525a67;
+  border-color: #525a67;
+  color: #ffffff;
 }
 
 .timer-end-overlay {
@@ -889,11 +1212,19 @@ button:disabled {
   margin: 0 0 12px;
 }
 
-.rules-modal-body code {
-  padding: 1px 6px;
-  border-radius: 5px;
-  background: #edf2fb;
+.rules-modal-body code,
+.rules-inline-panel code,
+.part-rule-preview code,
+.confirm-message code,
+.npc-modal-body code {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: #e6eaef;
+  border: 1px solid #cfd6df;
+  color: #1f2732;
   font-size: 0.95em;
+  font-weight: 700;
 }
 
 .hidden {
@@ -1535,4 +1866,59 @@ button:disabled {
 .rule-callout-box {
   border-left: 5px solid #7a1f26;
   background: #fbf2f2;
+}
+
+@media (max-width: 900px) {
+  .platform-shell {
+    padding: 12px;
+  }
+
+  .side-ad {
+    display: none;
+  }
+
+  .detail-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .bgm-panel {
+    display: none;
+  }
+}
+
+@media (max-width: 1450px) {
+  .side-ad {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .arrow {
+    width: 28px;
+    height: 14px;
+    flex-basis: 28px;
+  }
+
+  .arrow::before {
+    width: 18px;
+  }
+
+  .arrow::after {
+    border-top-width: 4px;
+    border-bottom-width: 4px;
+    border-left-width: 7px;
+  }
+
+  .part1-order-arrow,
+  .part3-flow-arrow {
+    width: 14px;
+    height: 24px;
+    flex-basis: 24px;
+  }
+
+  .part1-order-arrow::before,
+  .part3-flow-arrow::before {
+    height: 14px;
+  }
+}
 }

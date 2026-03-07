@@ -3,741 +3,96 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>[머미] 분가 GM</title>
+  <title>멀티 게임 GM 플랫폼</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="app-shell">
-    <div class="slide-frame">
-      <header class="top-bar">
-        <div class="header-title" id="headerTitle">게임 흐름 요약</div>
-        <button class="header-info-btn hidden" id="headerPartInfoBtn" type="button" data-role="part-info-open" aria-label="현재 순서 규칙 안내">i</button>
-        <div class="header-controls">
-          <button class="header-part-end-btn hidden" id="headerPartEndBtn" type="button" data-role="part-end-open">이야기 카드 A 공개</button>
-          <button class="header-part-end-btn hidden" id="headerPart2EndBtn" type="button" data-role="part2-end-open">이야기 카드 B 공개</button>
-          <button class="rules-book-btn" id="headerRulesBookBtn" type="button" data-role="rules-book-open" style="display:none;" aria-label="규칙 열기">
-            <svg class="rules-book-icon" viewBox="0 0 64 48" aria-hidden="true" focusable="false">
-              <path d="M3.5 34.5L10.5 11.5c7 2 14 0 21.5 5.8 7.5-5.8 14.5-3.8 21.5-5.8l7 23c-10.5-2-19.6-.7-28.5 6-8.9-6.7-18-8-28.5-6Z" />
-              <path d="M32 17v23" />
-              <path d="M8 30c9-2 17-.7 24 6" />
-              <path d="M56 30c-9-2-17-.7-24 6" />
-            </svg>
-            <span class="sr-only">규칙</span>
-          </button>
-          <div class="page-indicator">
-            <span id="pageNow">1</span> / <span id="pageTotal">20</span>
-          </div>
-          <div class="nav-buttons">
-            <button id="prevBtn" type="button" aria-label="이전">&lt;</button>
-            <button id="nextBtn" type="button" aria-label="다음">&gt;</button>
-          </div>
-        </div>
-      </header>
-
-      <main class="slides-container" id="slidesContainer">
-        <section class="slide active" data-index="0" data-title="게임 흐름 요약">
-          <div class="diagram">
-            <div class="node">준비, 캐릭터 선택, 설정서 숙지</div>
-            <div class="arrow">→</div>
-            <div class="node">파트 1<br />(3 라운드)</div>
-            <div class="arrow">→</div>
-            <div class="node">파트 2<br />(4 라운드)</div>
-            <div class="arrow">→</div>
-            <div class="node">파트 3<br />(추리, 투표)</div>
-            <div class="arrow">→</div>
-            <div class="node">엔딩</div>
-          </div>
-          <p class="flow-warning">그 파트로 진행하라는 지시가 있기 전까지, 규칙서와 설정서의 다음 파트의 내용을 읽어서는 안됩니다.</p>
-        </section>
-
-        <section class="slide" data-index="1" data-title="게임 준비">
-          <ul class="content-list">
-            <li>저택 지도, 파트 1 카드, 캐릭터 설정서를 꺼내주세요.</li>
-            <li>저택 1F 면을 앞면으로 펼쳐 주세요.</li>
-            <li>파트 1 카드 - 정보: 캐릭터 이름 를 캐릭터별로 더미를 만들어 배치해주세요.</li>
-            <li>이야기 카드 A, 캐릭터별 파워 0 카드를 배치해주세요.</li>
-          </ul>
-          <div class="placeholder-box">참고 이미지 첨부 예정</div>
-        </section>
-
-        <section class="slide story-slide" data-index="2" data-title="스토리">
-          <div class="scrollable-text">
-            <p>무대는 현대 미국 동북부, 뉴잉글랜드의 한 지방 도시다.</p>
-            <p>언덕 위에 저택이 세워졌을 때만 해도, 사람들은 그저 돈 많은 부자의 사치쯤으로 여겼다.</p>
-            <p>이 지역의 거부 그렉 모리스가 지은 저택에는, 요즘엔 보기 드물 만큼 막대한 돈이 들어갔다. 시대의 분위기를 살린 건축 양식과 값비싼 가구들, 냉난방과 Wi-Fi 같은 현대식 설비까지 빠짐없이 갖춰져 있었다.</p>
-            <p>하지만 저택이 완성되자마자, 그곳에는 어두운 소문이 따라붙기 시작했다. 공사에 참여했던 사람들이 이유도 모른 채 죽거나 실종됐고, 저택 주변에서는 설명하기 어려운 기이한 일들이 잇따랐다.</p>
-            <p>아름다운 신축 저택은 순식간에 '유령 저택'으로 불리게 됐다. 게다가 완공 후 얼마 지나지 않아, 저택의 주인 그렉 모리스와 그의 아내마저 저택 안에 틀어박힌 채 사람들 앞에 모습을 드러내지 않았다.</p>
-            <p>그리고 그날 밤, 당신들은 저마다의 사정으로 그 저택을 찾았다.</p>
-            <br></br>
-            <p>[수집가]는 그렉의 친구다. 오컬트에 관심이 많아 관련 물건을 모아 온 그는, 저택 완공 기념 모임이 있다며 그렉에게 초대를 받았다.</p>
-            <p>[영매 소녀]는 거리에서 제법 이름난 점술가다. [수집가]가 그녀를 눈여겨보다가, 그렉도 흥미를 가질 거라 생각해 동행을 권했다.</p>
-            <p>[정신과의]는 그렉의 아내 주디의 상담의다. 연락이 끊긴 그녀를 걱정하던 중, 그렉에게서 초대를 받았다.</p>
-            <p>[저택 주인 아들]은 3년 전 가출했다. 큰소리치며 집을 나갔던 그가 이제 돌아온 이유는, 솔직히 말해 돈 때문인 듯하다.</p>
-            <p>[건축가]는 시내 건축사무소에서 일한다. 저택에 대해 전문가 의견을 듣고 싶다는 그렉의 요청으로 초대받았다.</p>
-            <p>[신문 기자]는 지역 신문사 소속이다. 그렉에게 인터뷰를 요청했고, 흔쾌히 저택으로 오라는 답을 받았다.</p>
-            <br></br>
-            <p>[수집가], [정신과의], [저택 주인 아들], [건축가]가 저택에 도착했을 때, 초인종을 눌러도 아무도 나오지 않았다. 하인조차 마중을 나오지 않는 게 이상했다. 그때 저택 안에서 여자의 비명이 들렸고, 그들은 곧장 안으로 뛰어들었다.</p>
-            <p>그리고 응접실에서, 저택의 주인 그렉 모리스의 시체를 발견했다.</p>
-            <p>그 시체는 기묘했다. 응접실에는 복고풍 레코드에서 베토벤의 「운명」이 요란하게 울려 퍼지고 있었고, 그렉은 왕좌를 연상시키는 거대한 기계 의자에 결박된 채 숨져 있었다. 의자에서 튀어나온 쇠말뚝이 그의 심장을 꿰뚫고 있었다.</p>
-            <p>응접실 문 앞에서 비명을 지르던 사람은 [신문 기자]였다. 실내에는 창백한 얼굴로 시신 곁에 서 있는 [영매 소녀]의 모습도 보였다.</p>
-            <p>시체의 발치에는 원고지처럼 보이는 종이뭉치가 흩어져 있었다. 피에 젖은 종이 위에는 이렇게 적혀 있었다.</p>
-            <p>「내 저택에 온 것을 환영하네.」</p>
-            <p>「이 저택에 갇혔다는 건 이미 눈치챘겠지? 그대들은 내 저택의 진가를 체험하도록 선택된 자들일세. 자, 피와 공포를 바치고 있는 힘껏 발버둥 쳐 보게!」</p>
-            <p>이건 누가 봐도 데스 게임이었다.</p>
-            <p>그렉은 주최자인 척하다가, 어리석게도 스스로 함정에 빠진 걸까? 어쨌든 사망자가 나온 이상 경찰에 신고해야 했다. 그러나 곧 누군가가 외쳤다.</p>
-            <p>「전화가 안 돼요!」</p>
-            <p>그렇다면 차를 타고 시내로 내려가는 수밖에 없었다. 하지만 현관문은 언제부터인지 굳게 잠겨 있었고, 창문마다 철창이 설치돼 있었다.</p>
-            <p>대체 이 저택은 뭐란 말인가.</p>
-            <p>어떻게든 탈출해야 했다. 그나마 다행인 건, 그렉의 시신에서 저택 내부 문을 열 수 있는 열쇠 꾸러미가 발견됐다는 점이었다.</p>
-            <p>그렇게 당신들은 서로를 경계하면서도, 협력해 저택에서 빠져나가기로 한다. 하지만 저택에 어떤 함정이 숨어 있는지 알 수 없다. 게다가 그렉의 죽음이 사고가 아니라 타살이라면......?</p>
-            <p>길고도 공포스러운 밤이, 이제 막 시작되려 하고 있었다.</p>
-          </div>
-        </section>
-
-        <section class="slide character-slide" data-index="3" data-title="캐릭터 소개 페이지">
-          <div class="character-grid">
-            <article class="character-card card-collector">
-              <h3 class="character-name">수집가</h3>
-              <div class="character-illustration">일러스트 영역</div>
-            </article>
-            <article class="character-card card-medium">
-              <h3 class="character-name">영매 소녀</h3>
-              <div class="character-illustration">일러스트 영역</div>
-            </article>
-            <article class="character-card card-psychiatrist">
-              <h3 class="character-name">정신과의</h3>
-              <div class="character-illustration">일러스트 영역</div>
-            </article>
-            <article class="character-card card-son">
-              <h3 class="character-name">저택 주인 아들</h3>
-              <div class="character-illustration">일러스트 영역</div>
-            </article>
-            <article class="character-card card-architect">
-              <h3 class="character-name">건축가</h3>
-              <div class="character-illustration">일러스트 영역</div>
-            </article>
-            <article class="character-card card-reporter">
-              <h3 class="character-name">신문 기자</h3>
-              <div class="character-illustration">일러스트 영역</div>
-            </article>
-          </div>
-          <p class="flow-note"><button class="npc-open-btn" type="button" data-role="npc-open">5인 플레이의 경우</button> "NPC 결정 카드" "NPC 규칙 : 1" "NPC 규칙 : 2" 를 꺼내 확인합니다.</p>
-        </section>
-
-        <section class="slide timer-slide" data-index="4" data-title="캐릭터 설정서 숙지 시간">
-          <div class="timer-widget" data-timer-widget data-initial-seconds="900">
-            <div class="timer-panel">
-              <div class="timer-top-row">
-                <button class="timer-adjust-btn" data-role="minus" type="button" aria-label="1분 감소">-1</button>
-
-                <div class="timer-display" data-role="display">15:00</div>
-
-                <button class="timer-adjust-btn" data-role="plus" type="button" aria-label="1분 추가">+1</button>
-              </div>
-
-              <div class="timer-bottom-row">
-                <button class="timer-toggle-btn" data-role="toggle" type="button" aria-pressed="false">시작</button>
-              </div>
-            </div>
-            <div class="timer-end-overlay hidden" data-role="overlay">종료!</div>
-          </div>
-          <p class="flow-warning">중간에 있는 "다음 문장은 파트 2가 될때까지 보아서는 안됩니다." 라는 문장 다음 부분은 읽지마세요</p>
-        </section>
-
-        <section class="slide rules-slide" data-index="5" data-title="규칙">
-          <div class="rules-inline">
-            <div class="rules-inline-tabs" role="tablist" aria-label="규칙 탭">
-              <button class="rules-inline-tab active" type="button" role="tab" aria-selected="true" data-role="inline-rule-tab" data-rule-key="P">능력과 파워</button>
-              <button class="rules-inline-tab" type="button" role="tab" aria-selected="false" data-role="inline-rule-tab" data-rule-key="S">승점</button>
-              <button class="rules-inline-tab" type="button" role="tab" aria-selected="false" data-role="inline-rule-tab" data-rule-key="R">전체</button>
-            </div>
-            <div class="rules-inline-panel scrollable-text" id="rulesInlineBody" aria-live="polite">
-              <p>규칙 텍스트를 불러오는 중입니다.</p>
-            </div>
-          </div>
-        </section>
-
-                <section class="slide" data-index="6" data-title="자기소개 시간">
-          <h3 class="intro-center-title">각자 자기소개를 진행해주세요.</h3>
-        </section>
-
-        <section class="slide part1-order-slide" data-index="7" data-title="[파트 1] 진행 순서">
-          <div class="part1-order-wrap">
-            <h2 class="part1-order-title">[파트 1] 진행 순서</h2>
-            <div class="part1-order-flow">
-              <button class="part1-order-btn" type="button" data-rule-topic="행선지 상의 및 결정">행선지 상의 및 결정(3분)</button>
-              <div class="part1-order-arrow">↓</div>
-              <button class="part1-order-btn" type="button" data-rule-topic="탐색 및 정보 공유">탐색 및 정보 공유(10분)</button>
-              <div class="part1-order-arrow">↓</div>
-              <button class="part1-order-btn" type="button" data-rule-topic="인물 관찰 및 정보 공유">인물 관찰 및 정보 공유(6분)</button>
-              <div class="part1-order-arrow">↓</div>
-              <button class="part1-order-btn" type="button" data-rule-topic="다음 라운드 리더 지명">다음 라운드 리더 지명(1분)</button>
-            </div>
-            <p class="round1-leader-note">총 3 라운드 진행</p>
-          </div>
-        </section>
-<section class="slide timer-slide" data-index="8" data-title="[파트 1] 라운드 1: 행선지 상의 및 결정" data-part-info-title="[파트 1] 라운드 1: 행선지 상의 및 결정">
-          <div class="timer-widget" data-timer-widget data-initial-seconds="180">
-            <div class="timer-panel">
-              <div class="timer-top-row">
-                <button class="timer-adjust-btn" data-role="minus" type="button" aria-label="1분 감소">-1</button>
-                <div class="timer-display" data-role="display">03:00</div>
-                <button class="timer-adjust-btn" data-role="plus" type="button" aria-label="1분 추가">+1</button>
-              </div>
-              <div class="timer-bottom-row">
-                <button class="timer-toggle-btn" data-role="toggle" type="button" aria-pressed="false">시작</button>
-              </div>
-            </div>
-            <div class="timer-end-overlay hidden" data-role="overlay">종료!</div>
-          </div>
-          <p class="round1-leader-note">첫 리더는 <span class="name-collector">[수집가]</span>가 담당합니다.</p>
-        </section>
-
-        <section class="slide timer-slide" data-index="9" data-title="[파트 1] 라운드 1: 탐색 및 정보 공유" data-part-info-title="[파트 1] 라운드 1: 탐색 및 정보 공유">
-          <div class="timer-widget" data-timer-widget data-initial-seconds="600">
-            <div class="timer-panel">
-              <div class="timer-top-row">
-                <button class="timer-adjust-btn" data-role="minus" type="button" aria-label="1분 감소">-1</button>
-                <div class="timer-display" data-role="display">10:00</div>
-                <button class="timer-adjust-btn" data-role="plus" type="button" aria-label="1분 추가">+1</button>
-              </div>
-              <div class="timer-bottom-row">
-                <button class="timer-toggle-btn" data-role="toggle" type="button" aria-pressed="false">시작</button>
-              </div>
-            </div>
-            <div class="timer-end-overlay hidden" data-role="overlay">종료!</div>
-          </div>
-        </section>
-
-        <section class="slide timer-slide" data-index="10" data-title="[파트 1] 라운드 1: 인물 관찰 및 정보 공유" data-part-info-title="[파트 1] 라운드 1: 인물 관찰 및 정보 공유">
-          <div class="timer-widget" data-timer-widget data-initial-seconds="360">
-            <div class="timer-panel">
-              <div class="timer-top-row">
-                <button class="timer-adjust-btn" data-role="minus" type="button" aria-label="1분 감소">-1</button>
-                <div class="timer-display" data-role="display">06:00</div>
-                <button class="timer-adjust-btn" data-role="plus" type="button" aria-label="1분 추가">+1</button>
-              </div>
-              <div class="timer-bottom-row">
-                <button class="timer-toggle-btn" data-role="toggle" type="button" aria-pressed="false">시작</button>
-              </div>
-            </div>
-            <div class="timer-end-overlay hidden" data-role="overlay">종료!</div>
-          </div>
-        </section>
-
-        <section class="slide timer-slide" data-index="11" data-title="[파트 1] 라운드 1: 다음 라운드 리더 지명" data-part-info-title="[파트 1] 라운드 1: 다음 라운드 리더 지명">
-          <div class="timer-widget" data-timer-widget data-initial-seconds="60">
-            <div class="timer-panel">
-              <div class="timer-top-row">
-                <button class="timer-adjust-btn" data-role="minus" type="button" aria-label="1분 감소">-1</button>
-                <div class="timer-display" data-role="display">01:00</div>
-                <button class="timer-adjust-btn" data-role="plus" type="button" aria-label="1분 추가">+1</button>
-              </div>
-              <div class="timer-bottom-row">
-                <button class="timer-toggle-btn" data-role="toggle" type="button" aria-pressed="false">시작</button>
-              </div>
-            </div>
-            <div class="timer-end-overlay hidden" data-role="overlay">종료!</div>
-          </div>
-        </section>
-
-        <section class="slide timer-slide" data-index="12" data-title="[파트 1] 라운드 2: 행선지 상의 및 결정" data-part-info-title="[파트 1] 라운드 2: 행선지 상의 및 결정">
-          <div class="timer-widget" data-timer-widget data-initial-seconds="180">
-            <div class="timer-panel">
-              <div class="timer-top-row">
-                <button class="timer-adjust-btn" data-role="minus" type="button" aria-label="1분 감소">-1</button>
-                <div class="timer-display" data-role="display">03:00</div>
-                <button class="timer-adjust-btn" data-role="plus" type="button" aria-label="1분 추가">+1</button>
-              </div>
-              <div class="timer-bottom-row">
-                <button class="timer-toggle-btn" data-role="toggle" type="button" aria-pressed="false">시작</button>
-              </div>
-            </div>
-            <div class="timer-end-overlay hidden" data-role="overlay">종료!</div>
-          </div>
-        </section>
-
-        <section class="slide timer-slide" data-index="13" data-title="[파트 1] 라운드 2: 탐색 및 정보 공유" data-part-info-title="[파트 1] 라운드 2: 탐색 및 정보 공유">
-          <div class="timer-widget" data-timer-widget data-initial-seconds="600">
-            <div class="timer-panel">
-              <div class="timer-top-row">
-                <button class="timer-adjust-btn" data-role="minus" type="button" aria-label="1분 감소">-1</button>
-                <div class="timer-display" data-role="display">10:00</div>
-                <button class="timer-adjust-btn" data-role="plus" type="button" aria-label="1분 추가">+1</button>
-              </div>
-              <div class="timer-bottom-row">
-                <button class="timer-toggle-btn" data-role="toggle" type="button" aria-pressed="false">시작</button>
-              </div>
-            </div>
-            <div class="timer-end-overlay hidden" data-role="overlay">종료!</div>
-          </div>
-        </section>
-
-        <section class="slide timer-slide" data-index="14" data-title="[파트 1] 라운드 2: 인물 관찰 및 정보 공유" data-part-info-title="[파트 1] 라운드 2: 인물 관찰 및 정보 공유">
-          <div class="timer-widget" data-timer-widget data-initial-seconds="360">
-            <div class="timer-panel">
-              <div class="timer-top-row">
-                <button class="timer-adjust-btn" data-role="minus" type="button" aria-label="1분 감소">-1</button>
-                <div class="timer-display" data-role="display">06:00</div>
-                <button class="timer-adjust-btn" data-role="plus" type="button" aria-label="1분 추가">+1</button>
-              </div>
-              <div class="timer-bottom-row">
-                <button class="timer-toggle-btn" data-role="toggle" type="button" aria-pressed="false">시작</button>
-              </div>
-            </div>
-            <div class="timer-end-overlay hidden" data-role="overlay">종료!</div>
-          </div>
-        </section>
-
-        <section class="slide timer-slide" data-index="15" data-title="[파트 1] 라운드 2: 다음 라운드 리더 지명" data-part-info-title="[파트 1] 라운드 2: 다음 라운드 리더 지명">
-          <div class="timer-widget" data-timer-widget data-initial-seconds="60">
-            <div class="timer-panel">
-              <div class="timer-top-row">
-                <button class="timer-adjust-btn" data-role="minus" type="button" aria-label="1분 감소">-1</button>
-                <div class="timer-display" data-role="display">01:00</div>
-                <button class="timer-adjust-btn" data-role="plus" type="button" aria-label="1분 추가">+1</button>
-              </div>
-              <div class="timer-bottom-row">
-                <button class="timer-toggle-btn" data-role="toggle" type="button" aria-pressed="false">시작</button>
-              </div>
-            </div>
-            <div class="timer-end-overlay hidden" data-role="overlay">종료!</div>
-          </div>
-        </section>
-
-        <section class="slide timer-slide" data-index="16" data-title="[파트 1] 라운드 3: 행선지 상의 및 결정" data-part-info-title="[파트 1] 라운드 3: 행선지 상의 및 결정">
-          <div class="timer-widget" data-timer-widget data-initial-seconds="180">
-            <div class="timer-panel">
-              <div class="timer-top-row">
-                <button class="timer-adjust-btn" data-role="minus" type="button" aria-label="1분 감소">-1</button>
-                <div class="timer-display" data-role="display">03:00</div>
-                <button class="timer-adjust-btn" data-role="plus" type="button" aria-label="1분 추가">+1</button>
-              </div>
-              <div class="timer-bottom-row">
-                <button class="timer-toggle-btn" data-role="toggle" type="button" aria-pressed="false">시작</button>
-              </div>
-            </div>
-            <div class="timer-end-overlay hidden" data-role="overlay">종료!</div>
-          </div>
-        </section>
-
-        <section class="slide timer-slide" data-index="17" data-title="[파트 1] 라운드 3: 탐색 및 정보 공유" data-part-info-title="[파트 1] 라운드 3: 탐색 및 정보 공유">
-          <div class="timer-widget" data-timer-widget data-initial-seconds="600">
-            <div class="timer-panel">
-              <div class="timer-top-row">
-                <button class="timer-adjust-btn" data-role="minus" type="button" aria-label="1분 감소">-1</button>
-                <div class="timer-display" data-role="display">10:00</div>
-                <button class="timer-adjust-btn" data-role="plus" type="button" aria-label="1분 추가">+1</button>
-              </div>
-              <div class="timer-bottom-row">
-                <button class="timer-toggle-btn" data-role="toggle" type="button" aria-pressed="false">시작</button>
-              </div>
-            </div>
-            <div class="timer-end-overlay hidden" data-role="overlay">종료!</div>
-          </div>
-        </section>
-
-        <section class="slide timer-slide" data-index="18" data-title="[파트 1] 라운드 3: 인물 관찰 및 정보 공유" data-part-info-title="[파트 1] 라운드 3: 인물 관찰 및 정보 공유">
-          <div class="timer-widget" data-timer-widget data-initial-seconds="360">
-            <div class="timer-panel">
-              <div class="timer-top-row">
-                <button class="timer-adjust-btn" data-role="minus" type="button" aria-label="1분 감소">-1</button>
-                <div class="timer-display" data-role="display">06:00</div>
-                <button class="timer-adjust-btn" data-role="plus" type="button" aria-label="1분 추가">+1</button>
-              </div>
-              <div class="timer-bottom-row">
-                <button class="timer-toggle-btn" data-role="toggle" type="button" aria-pressed="false">시작</button>
-              </div>
-            </div>
-            <div class="timer-end-overlay hidden" data-role="overlay">종료!</div>
-          </div>
-        </section>
-
-        <section class="slide timer-slide" data-index="19" data-title="[파트 1] 라운드 3: 다음 라운드 리더 지명" data-part-info-title="[파트 1] 라운드 3: 다음 라운드 리더 지명">
-          <div class="timer-widget" data-timer-widget data-initial-seconds="60">
-            <div class="timer-panel">
-              <div class="timer-top-row">
-                <button class="timer-adjust-btn" data-role="minus" type="button" aria-label="1분 감소">-1</button>
-                <div class="timer-display" data-role="display">01:00</div>
-                <button class="timer-adjust-btn" data-role="plus" type="button" aria-label="1분 추가">+1</button>
-              </div>
-              <div class="timer-bottom-row">
-                <button class="timer-toggle-btn" data-role="toggle" type="button" aria-pressed="false">시작</button>
-              </div>
-            </div>
-            <div class="timer-end-overlay hidden" data-role="overlay">종료!</div>
-          </div>
-        </section>
-
-        <section class="slide chapter21-slide" data-index="20" data-title="[파트 2] 스토리" data-part-anchor="part2-start">
-          <div class="chapter21-wrap">
-            <div class="chapter21-body scrollable-text">
-              <p>마침내 당신들은 「태양의 열쇠」와 「달의 열쇠」를 찾아냈고, 굳게 닫혀 있던 2층으로 향하는 문을 열었다. 탐색 방식에 따라 시간이 꽤 걸렸을지도 모른다.</p>
-              <p>계단을 올라 2층에 발을 들인 순간, 저택은 예상보다 훨씬 더 음산하게 느껴졌다. 어디선가 누군가가 지켜보는 듯한 악의 어린 시선이 등줄기를 훑고, 어둠은 한층 더 짙어져 있었다.</p>
-              <p>계단실에 도착하자마자 정면에는 두 개의 문이 보였다. 그제야 모두는 아주 단순한 사실을 깨달았다. <strong>이 앞에서 무슨 일이 벌어질지는 아무도 모른다.</strong></p>
-              <p class="chapter21-dialogue">"어쩌지?"</p>
-              <p class="chapter21-dialogue">"잠깐 돌아가서 아래층을 더 조사할까……."</p>
-              <p class="chapter21-dialogue">"조금 더 준비하고 가는 게 낫지 않을까."</p>
-              <p>누군가가 나지막이 약한 말을 꺼낸 바로 그때였다. 쿵, 하고 저택 전체를 뒤흔드는 충격이 울렸다. 땅울림인지, 무언가의 포효인지 분간할 수 없는 소리가 공기를 떨게 했다.</p>
-              <p>이어서 철커덩 하는 금속음과 함께, 계단과 계단실의 경계로 철제 셔터가 내려왔다. 퇴로가 끊겼다.</p>
-              <p class="chapter21-final-line">여기까지 온 이상, 더 나아갈 수밖에 없다. 어떤 문을 선택할지, 누구와 함께 움직일지. 그 선택이 거대한 운명의 갈림길이 된다.</p>
-            </div>
-          </div>
-        </section>
-
-        <section class="slide chapter22-slide" data-index="21" data-title="[파트 2] 준비">
-          <div class="chapter22-wrap">
-            <div class="chapter22-body scrollable-text">
-              <h3 class="chapter22-heading">맵 및 카드 준비</h3>
-              <ul class="chapter22-list">
-                <li>펼쳐 둔 저택 지도를 뒤집어 주세요. 방금까지 사용한 1F 맵 뒷면에는 건물의 골격만 표시된 백지도가 있습니다.</li>
-                <li>파트 1에서 획득하지 못한 「방 카드」와 「캐릭터 정보 카드」는 더 이상 획득할 수 없습니다. 해당 카드는 모두 상자로 되돌려 주세요. (단, 이미 손패에 있는 카드는 되돌리지 않습니다.)</li>
-                <li>「파워 카드」는 파트 2에서도 계속 사용합니다.</li>
-                <li>상자에서 파트 2라고 적힌 더미를 꺼냅니다. 방 카드(파트 2에서는 「서재」, 「아이 방」처럼 방 이름이 적혀 있습니다)는 방별로 더미를 만든 뒤, 맨 위에 방 이름만 적힌 카드를 올려 배치해 주세요.</li>
-                <li>이야기 카드 B를 꺼내 맵 근처에 둡니다.</li>
-                <li>특수 정보 카드 5장을 모든 플레이어가 손쉽게 닿을 수 있는 곳에 놓습니다.</li>
-                <li>지도 카드(A~K 알파벳 카드)는 즉시 사용할 수 있도록 알파벳 면이 보이게 뒤집어 더미로 준비합니다.</li>
-              </ul>
-
-              <h3 class="chapter22-heading">탐색 전 안내</h3>
-              <p>모든 캐릭터의 시작 위치는 계단입니다.</p>
-              <p>1층은 비교적 열린 구조였고, 건물 외관 등을 단서로 구조를 짐작하며 탐색할 수 있었습니다. 하지만 2층은 미지의 영역입니다. 방 구조는 처음부터 알 수 없습니다.</p>
-              <p class="chapter22-note">자세한 내용은 파트 2 진행 순서의 「1: 행선지 상의 및 결정」을 참조해 주세요.</p>
-              <p class="chapter22-final-line">준비가 끝났다면 각자 설정서의 파트 2를 확인합니다. (5분)</p>
-              <div class="chapter22-image-placeholder">이미지 첨부 예정</div>
-            </div>
-          </div>
-        </section>
-
-        <section class="slide timer-slide" data-index="22" data-title="[파트 2] 개인 설정서 파트 2확인">
-          <h3 class="intro-center-title">개인 설정서 파트 2확인</h3>
-          <div class="timer-widget" data-timer-widget data-initial-seconds="300">
-            <div class="timer-panel">
-              <div class="timer-top-row">
-                <button class="timer-adjust-btn" data-role="minus" type="button" aria-label="1분 감소">-1</button>
-                <div class="timer-display" data-role="display">05:00</div>
-                <button class="timer-adjust-btn" data-role="plus" type="button" aria-label="1분 추가">+1</button>
-              </div>
-              <div class="timer-bottom-row">
-                <button class="timer-toggle-btn" data-role="toggle" type="button" aria-pressed="false">시작</button>
-              </div>
-            </div>
-            <div class="timer-end-overlay hidden" data-role="overlay">종료!</div>
-          </div>
-        </section>
-
-        <section class="slide part1-order-slide" data-index="23" data-title="[파트 2] 진행 순서">
-          <div class="part1-order-wrap">
-            <h2 class="part1-order-title">[파트 2] 진행 순서</h2>
-            <div class="part1-order-flow">
-              <button class="part1-order-btn" type="button" data-rule-topic="행선지 상의 및 결정(3분)">행선지 상의 및 결정 (3분)</button>
-              <div class="part1-order-arrow">↓</div>
-              <button class="part1-order-btn" type="button" data-rule-topic="탐색과 정보 공유(15분)">탐색과 정보 공유 (15분)</button>
-              <div class="part1-order-arrow">↓</div>
-              <button class="part1-order-btn" type="button" data-rule-topic="다음 라운드 리더 지명(1분)">다음 라운드 리더 지명 (1분)</button>
-            </div>
-            <p class="round1-leader-note">총 4 라운드 진행</p>
-          </div>
-        </section>
-
-        <section class="slide timer-slide" data-index="24" data-title="[파트 2] 라운드 1: 행선지 상의 및 결정" data-part-info-title="[파트 2] 라운드 1: 행선지 상의 및 결정" data-part-info-topic="행선지 상의 및 결정(3분)">
-          <div class="timer-widget" data-timer-widget data-initial-seconds="180">
-            <div class="timer-panel">
-              <div class="timer-top-row">
-                <button class="timer-adjust-btn" data-role="minus" type="button" aria-label="1분 감소">-1</button>
-                <div class="timer-display" data-role="display">03:00</div>
-                <button class="timer-adjust-btn" data-role="plus" type="button" aria-label="1분 추가">+1</button>
-              </div>
-              <div class="timer-bottom-row">
-                <button class="timer-toggle-btn" data-role="toggle" type="button" aria-pressed="false">시작</button>
-              </div>
-            </div>
-            <div class="timer-end-overlay hidden" data-role="overlay">종료!</div>
-          </div>
-        </section>
-
-        <section class="slide timer-slide" data-index="25" data-title="[파트 2] 라운드 1: 탐색과 정보 공유" data-part-info-title="[파트 2] 라운드 1: 탐색과 정보 공유" data-part-info-topic="탐색과 정보 공유(15분)">
-          <div class="timer-widget" data-timer-widget data-initial-seconds="900">
-            <div class="timer-panel">
-              <div class="timer-top-row">
-                <button class="timer-adjust-btn" data-role="minus" type="button" aria-label="1분 감소">-1</button>
-                <div class="timer-display" data-role="display">15:00</div>
-                <button class="timer-adjust-btn" data-role="plus" type="button" aria-label="1분 추가">+1</button>
-              </div>
-              <div class="timer-bottom-row">
-                <button class="timer-toggle-btn" data-role="toggle" type="button" aria-pressed="false">시작</button>
-              </div>
-            </div>
-            <div class="timer-end-overlay hidden" data-role="overlay">종료!</div>
-          </div>
-        </section>
-
-        <section class="slide timer-slide" data-index="26" data-title="[파트 2] 라운드 1: 다음 라운드 리더 지명" data-part-info-title="[파트 2] 라운드 1: 다음 라운드 리더 지명" data-part-info-topic="다음 라운드 리더 지명(1분)">
-          <div class="timer-widget" data-timer-widget data-initial-seconds="60">
-            <div class="timer-panel">
-              <div class="timer-top-row">
-                <button class="timer-adjust-btn" data-role="minus" type="button" aria-label="1분 감소">-1</button>
-                <div class="timer-display" data-role="display">01:00</div>
-                <button class="timer-adjust-btn" data-role="plus" type="button" aria-label="1분 추가">+1</button>
-              </div>
-              <div class="timer-bottom-row">
-                <button class="timer-toggle-btn" data-role="toggle" type="button" aria-pressed="false">시작</button>
-              </div>
-            </div>
-            <div class="timer-end-overlay hidden" data-role="overlay">종료!</div>
-          </div>
-        </section>
-
-        <section class="slide timer-slide" data-index="27" data-title="[파트 2] 라운드 2: 행선지 상의 및 결정" data-part-info-title="[파트 2] 라운드 2: 행선지 상의 및 결정" data-part-info-topic="행선지 상의 및 결정(3분)">
-          <div class="timer-widget" data-timer-widget data-initial-seconds="180">
-            <div class="timer-panel">
-              <div class="timer-top-row">
-                <button class="timer-adjust-btn" data-role="minus" type="button" aria-label="1분 감소">-1</button>
-                <div class="timer-display" data-role="display">03:00</div>
-                <button class="timer-adjust-btn" data-role="plus" type="button" aria-label="1분 추가">+1</button>
-              </div>
-              <div class="timer-bottom-row">
-                <button class="timer-toggle-btn" data-role="toggle" type="button" aria-pressed="false">시작</button>
-              </div>
-            </div>
-            <div class="timer-end-overlay hidden" data-role="overlay">종료!</div>
-          </div>
-        </section>
-
-        <section class="slide timer-slide" data-index="28" data-title="[파트 2] 라운드 2: 탐색과 정보 공유" data-part-info-title="[파트 2] 라운드 2: 탐색과 정보 공유" data-part-info-topic="탐색과 정보 공유(15분)">
-          <div class="timer-widget" data-timer-widget data-initial-seconds="900">
-            <div class="timer-panel">
-              <div class="timer-top-row">
-                <button class="timer-adjust-btn" data-role="minus" type="button" aria-label="1분 감소">-1</button>
-                <div class="timer-display" data-role="display">15:00</div>
-                <button class="timer-adjust-btn" data-role="plus" type="button" aria-label="1분 추가">+1</button>
-              </div>
-              <div class="timer-bottom-row">
-                <button class="timer-toggle-btn" data-role="toggle" type="button" aria-pressed="false">시작</button>
-              </div>
-            </div>
-            <div class="timer-end-overlay hidden" data-role="overlay">종료!</div>
-          </div>
-        </section>
-
-        <section class="slide timer-slide" data-index="29" data-title="[파트 2] 라운드 2: 다음 라운드 리더 지명" data-part-info-title="[파트 2] 라운드 2: 다음 라운드 리더 지명" data-part-info-topic="다음 라운드 리더 지명(1분)">
-          <div class="timer-widget" data-timer-widget data-initial-seconds="60">
-            <div class="timer-panel">
-              <div class="timer-top-row">
-                <button class="timer-adjust-btn" data-role="minus" type="button" aria-label="1분 감소">-1</button>
-                <div class="timer-display" data-role="display">01:00</div>
-                <button class="timer-adjust-btn" data-role="plus" type="button" aria-label="1분 추가">+1</button>
-              </div>
-              <div class="timer-bottom-row">
-                <button class="timer-toggle-btn" data-role="toggle" type="button" aria-pressed="false">시작</button>
-              </div>
-            </div>
-            <div class="timer-end-overlay hidden" data-role="overlay">종료!</div>
-          </div>
-        </section>
-
-        <section class="slide timer-slide" data-index="30" data-title="[파트 2] 라운드 3: 행선지 상의 및 결정" data-part-info-title="[파트 2] 라운드 3: 행선지 상의 및 결정" data-part-info-topic="행선지 상의 및 결정(3분)">
-          <div class="timer-widget" data-timer-widget data-initial-seconds="180">
-            <div class="timer-panel">
-              <div class="timer-top-row">
-                <button class="timer-adjust-btn" data-role="minus" type="button" aria-label="1분 감소">-1</button>
-                <div class="timer-display" data-role="display">03:00</div>
-                <button class="timer-adjust-btn" data-role="plus" type="button" aria-label="1분 추가">+1</button>
-              </div>
-              <div class="timer-bottom-row">
-                <button class="timer-toggle-btn" data-role="toggle" type="button" aria-pressed="false">시작</button>
-              </div>
-            </div>
-            <div class="timer-end-overlay hidden" data-role="overlay">종료!</div>
-          </div>
-        </section>
-
-        <section class="slide timer-slide" data-index="31" data-title="[파트 2] 라운드 3: 탐색과 정보 공유" data-part-info-title="[파트 2] 라운드 3: 탐색과 정보 공유" data-part-info-topic="탐색과 정보 공유(15분)">
-          <div class="timer-widget" data-timer-widget data-initial-seconds="900">
-            <div class="timer-panel">
-              <div class="timer-top-row">
-                <button class="timer-adjust-btn" data-role="minus" type="button" aria-label="1분 감소">-1</button>
-                <div class="timer-display" data-role="display">15:00</div>
-                <button class="timer-adjust-btn" data-role="plus" type="button" aria-label="1분 추가">+1</button>
-              </div>
-              <div class="timer-bottom-row">
-                <button class="timer-toggle-btn" data-role="toggle" type="button" aria-pressed="false">시작</button>
-              </div>
-            </div>
-            <div class="timer-end-overlay hidden" data-role="overlay">종료!</div>
-          </div>
-        </section>
-
-        <section class="slide timer-slide" data-index="32" data-title="[파트 2] 라운드 3: 다음 라운드 리더 지명" data-part-info-title="[파트 2] 라운드 3: 다음 라운드 리더 지명" data-part-info-topic="다음 라운드 리더 지명(1분)">
-          <div class="timer-widget" data-timer-widget data-initial-seconds="60">
-            <div class="timer-panel">
-              <div class="timer-top-row">
-                <button class="timer-adjust-btn" data-role="minus" type="button" aria-label="1분 감소">-1</button>
-                <div class="timer-display" data-role="display">01:00</div>
-                <button class="timer-adjust-btn" data-role="plus" type="button" aria-label="1분 추가">+1</button>
-              </div>
-              <div class="timer-bottom-row">
-                <button class="timer-toggle-btn" data-role="toggle" type="button" aria-pressed="false">시작</button>
-              </div>
-            </div>
-            <div class="timer-end-overlay hidden" data-role="overlay">종료!</div>
-          </div>
-        </section>
-
-        <section class="slide timer-slide" data-index="33" data-title="[파트 2] 라운드 4: 행선지 상의 및 결정" data-part-info-title="[파트 2] 라운드 4: 행선지 상의 및 결정" data-part-info-topic="행선지 상의 및 결정(3분)">
-          <div class="timer-widget" data-timer-widget data-initial-seconds="180">
-            <div class="timer-panel">
-              <div class="timer-top-row">
-                <button class="timer-adjust-btn" data-role="minus" type="button" aria-label="1분 감소">-1</button>
-                <div class="timer-display" data-role="display">03:00</div>
-                <button class="timer-adjust-btn" data-role="plus" type="button" aria-label="1분 추가">+1</button>
-              </div>
-              <div class="timer-bottom-row">
-                <button class="timer-toggle-btn" data-role="toggle" type="button" aria-pressed="false">시작</button>
-              </div>
-            </div>
-            <div class="timer-end-overlay hidden" data-role="overlay">종료!</div>
-          </div>
-        </section>
-
-        <section class="slide timer-slide" data-index="34" data-title="[파트 2] 라운드 4: 탐색과 정보 공유" data-part-info-title="[파트 2] 라운드 4: 탐색과 정보 공유" data-part-info-topic="탐색과 정보 공유(15분)">
-          <div class="timer-widget" data-timer-widget data-initial-seconds="900">
-            <div class="timer-panel">
-              <div class="timer-top-row">
-                <button class="timer-adjust-btn" data-role="minus" type="button" aria-label="1분 감소">-1</button>
-                <div class="timer-display" data-role="display">15:00</div>
-                <button class="timer-adjust-btn" data-role="plus" type="button" aria-label="1분 추가">+1</button>
-              </div>
-              <div class="timer-bottom-row">
-                <button class="timer-toggle-btn" data-role="toggle" type="button" aria-pressed="false">시작</button>
-              </div>
-            </div>
-            <div class="timer-end-overlay hidden" data-role="overlay">종료!</div>
-          </div>
-        </section>
-
-        <section class="slide timer-slide" data-index="35" data-title="[파트 2] 라운드 4: 다음 라운드 리더 지명" data-part-info-title="[파트 2] 라운드 4: 다음 라운드 리더 지명" data-part-info-topic="다음 라운드 리더 지명(1분)">
-          <div class="timer-widget" data-timer-widget data-initial-seconds="60">
-            <div class="timer-panel">
-              <div class="timer-top-row">
-                <button class="timer-adjust-btn" data-role="minus" type="button" aria-label="1분 감소">-1</button>
-                <div class="timer-display" data-role="display">01:00</div>
-                <button class="timer-adjust-btn" data-role="plus" type="button" aria-label="1분 추가">+1</button>
-              </div>
-              <div class="timer-bottom-row">
-                <button class="timer-toggle-btn" data-role="toggle" type="button" aria-pressed="false">시작</button>
-              </div>
-            </div>
-            <div class="timer-end-overlay hidden" data-role="overlay">종료!</div>
-          </div>
-        </section>
-
-        <section class="slide chapter37-slide" data-index="36" data-title="[파트 3] 스토리" data-part-anchor="part3-start">
-          <div class="chapter37-wrap">
-            <div class="chapter37-body scrollable-text">
-              <p>당신들은 마침내 결론을 내렸다. <strong>주디는 지하실에 있다.</strong> 옥상 굴뚝을 통해 아래로 내려가면 도달할 수 있다. 그 결론에 이르기까지 얼마나 오래 걸렸는지는, 전적으로 당신들의 선택에 달려 있었다.</p>
-              <p>지하실은 저택의 다른 공간과 전혀 달랐다. 그곳에는 장엄한 신전을 연상시키는 분위기가 깔려 있었고, 서늘하고 차가운 공기가 피부를 파고들었다.</p>
-              <p>어둠 속을 걷는 동안 피와 살이 썩는 냄새가 코를 찔렀다. 본능적으로 코와 입을 막고 싶어지는 그 순간, 당신들은 거대한 홀 한가운데 쓰러진 주디를 발견한다. 그녀는 방금 전까지 기도를 올리던 자세 그대로 바닥에 엎드려 있었다.</p>
-              <p>주디를 일으키자, 그녀는 쉰 목소리로 힘겹게 말을 잇는다.</p>
-              <p class="chapter37-dialogue">"아아... 그렉은... 죽었군요... 힘이... 그가 부르려던 자... 옛 신이 강림하려고..."</p>
-              <p>입을 여는 것조차 위태로울 만큼 쇠약해진 상태였지만, 주디는 거친 숨 사이로 필사적으로 「정화의 의식」 방법이 적힌 의식서를 당신들에게 건넨 뒤 의식을 잃었다.</p>
-              <p>당신들은 의식서를 읽고 정화 의식을 진행하기로 한다. 의식은 한 명의 「사제」를 세워 집행해야 한다. 그러나 문제가 있었다. 사제의 힘을 잇고 있던 그렉이 이미 죽어 버린 것이다.</p>
-              <p>그렉의 죽음이 사고라면, 그의 시신에는 아직 사제의 힘이 남아 있을 가능성이 있다. 의례용 도구로 시신을 찌르면, 그 힘은 찌른 자에게 계승된다.</p>
-              <p>반대로 그 죽음이 살인이라면, 사제의 힘은 이미 살인자에게 넘어갔을 것이다.</p>
-              <p>당신들은 서둘러 논의를 시작한다. 이 사건은 사고인가, 살인인가. 만약 살인이고, 범인이 그 힘을 계승했다면 그에게 의식을 맡길 수는 없다. 다행히 의식서에는 범인을 죽이지 않고도 힘을 빼앗는 방법이 적혀 있었다. 즉, 범인이 아닌 다른 인물도 사제로 세울 수 있다.</p>
-              <p>저택을 뒤덮은 힘은 이제 당신들의 존재를 짓누를 만큼 거대해지고 있다.</p>
-              <p class="chapter37-final-line">결단의 시간이다. 이 사건이 사고인지 살인인지 확정하고, 사제를 선택해 의식을 치러야 한다. 두 선택 모두 치명적으로 중요하다.</p>
-              <p class="chapter37-final-line">그렉의 사제의 힘을 잇지 못하면 의식의 성공은 어려워진다. 또한 사제가 될 인물과 그 소양 역시 결정적이다. 이들 가운데 강력한 정화의 힘을 지닌 자가 있을 수도, 반대로 저택의 악마에게 매혹되어 정화를 바라지 않는 자가 있을 수도 있다.</p>
-            </div>
-          </div>
-        </section>
-
-        <section class="slide part3-prep-slide" data-index="37" data-title="[파트 3] 준비">
-          <div class="part3-prep-wrap">
-            <div class="part3-prep-intro">
-              <p>카드나 맵 등의 추가 준비물은 필요하지 않습니다.</p>
-              <p>이 사건이 사고인지, 살인인지를 논의해 플레이어 전원의 결론을 내립니다.</p>
-              <p>그 후 「사제」를 한 명 결정해 의식을 치릅니다.</p>
-            </div>
-            <div class="part3-flow">
-              <button class="part3-flow-btn" type="button" data-rule-topic="전체 회의 (10분)">1: 전체 회의 (10분)</button>
-              <div class="part3-flow-arrow">↓</div>
-              <button class="part3-flow-btn" type="button" data-rule-topic="추리 페이즈 (각 플레이어당 1분)">2: 추리 페이즈 (각 플레이어당 1분)</button>
-              <div class="part3-flow-arrow">↓</div>
-              <button class="part3-flow-btn" type="button" data-rule-topic="투표">3: 투표</button>
-              <div class="part3-flow-arrow">↓</div>
-              <button class="part3-flow-btn" type="button" data-rule-topic="사제 선발">4: 사제 선발</button>
-              <div class="part3-flow-arrow">↓</div>
-              <button class="part3-flow-btn part3-flow-ending-btn" type="button">5: 엔딩</button>
-            </div>
-          </div>
-        </section>
-
-        <section class="slide timer-slide" data-index="38" data-title="[파트 3] 전체 회의">
-          <h3 class="intro-center-title">전체 회의</h3>
-          <div class="timer-widget" data-timer-widget data-initial-seconds="600">
-            <div class="timer-panel">
-              <div class="timer-top-row">
-                <button class="timer-adjust-btn" data-role="minus" type="button" aria-label="1분 감소">-1</button>
-                <div class="timer-display" data-role="display">10:00</div>
-                <button class="timer-adjust-btn" data-role="plus" type="button" aria-label="1분 추가">+1</button>
-              </div>
-              <div class="timer-bottom-row">
-                <button class="timer-toggle-btn" data-role="toggle" type="button" aria-pressed="false">시작</button>
-              </div>
-            </div>
-            <div class="timer-end-overlay hidden" data-role="overlay">종료!</div>
-          </div>
-        </section>
-
-        <section class="slide timer-slide" data-index="39" data-title="[파트 3] 추리 페이즈">
-          <h3 class="intro-center-title">추리 페이즈</h3>
-          <p class="part3-phase-subtitle">플레이어당 1분</p>
-          <div class="timer-widget" data-timer-widget data-initial-seconds="60">
-            <div class="timer-panel">
-              <div class="timer-top-row">
-                <button class="timer-adjust-btn" data-role="minus" type="button" aria-label="1분 감소">-1</button>
-                <div class="timer-display" data-role="display">01:00</div>
-                <button class="timer-adjust-btn" data-role="plus" type="button" aria-label="1분 추가">+1</button>
-              </div>
-              <div class="timer-bottom-row">
-                <button class="timer-toggle-btn" data-role="toggle" type="button" aria-pressed="false">시작</button>
-              </div>
-            </div>
-            <div class="timer-end-overlay hidden" data-role="overlay">종료!</div>
-          </div>
-        </section>
-
-        <section class="slide part3-vote-slide" data-index="40" data-title="[파트 3] 투표">
-          <div class="part3-decision-wrap">
-            <h2 class="part3-decision-title">그렉의 죽음의 원인에게 투표</h2>
-            <div class="part3-decision-list">
-              <p>주디가 범인 -> 위</p>
-              <p>NPC가 범인 -> 게임 상자</p>
-              <p>결정되지 않으면 아무도 구속되지 않음</p>
-            </div>
-          </div>
-        </section>
-
-        <section class="slide part3-priest-slide" data-index="41" data-title="[파트 3] 사제 선발">
-          <div class="part3-decision-wrap">
-            <h2 class="part3-decision-title">의식을 치를 사제 투표</h2>
-            <div class="part3-decision-list">
-              <p>구속된 캐릭터는 투표권이 없습니다.</p>
-              <p>구속된 캐릭터에게는 투표할 수 없습니다.</p>
-              <p>결정되지 않으면 사제는 없다</p>
-            </div>
-          </div>
-        </section>
-
-        <section class="slide part3-ending-slide" data-index="42" data-title="[파트 3] 엔딩">
-          <h2 class="part3-ending-title">엔딩 북을 읽어주세요</h2>
-        </section>
-      </main>
-    </div>
+  <div class="orientation-guard hidden" id="orientationGuard" role="alert" aria-live="polite">
+    <h2>가로 모드로 회전해 주세요</h2>
+    <p>모바일에서는 가로 화면을 지원합니다. TV/노트북에서 가장 좋은 경험을 제공합니다.</p>
   </div>
 
-  
+  <div class="platform-shell">
+    <aside class="side-ad side-ad-left hidden">
+      <div class="ad-slot" data-slot="left-rail">광고 영역</div>
+    </aside>
+    <aside class="side-ad side-ad-right hidden">
+      <div class="ad-slot" data-slot="right-rail">광고 영역</div>
+    </aside>
+
+    <header class="platform-header">
+      <h1 class="platform-title" id="platformTitle">멀티 게임 GM</h1>
+      <p class="platform-subtitle" id="platformSubtitle">TV/노트북 16:9 환경 권장</p>
+    </header>
+
+    <section class="view-card" id="catalogView">
+      <div class="toolbar-row">
+        <input id="gameSearchInput" class="search-input" type="search" placeholder="게임 이름 검색" aria-label="게임 이름 검색" />
+        <select id="gameSortSelect" class="sort-select" aria-label="정렬">
+          <option value="name">이름순</option>
+          <option value="players">인원순</option>
+        </select>
+      </div>
+      <div id="gameList" class="game-grid" aria-live="polite"></div>
+    </section>
+
+    <section class="view-card hidden" id="detailView">
+      <div class="detail-header-row">
+        <button id="detailBackBtn" type="button">목록으로</button>
+      </div>
+      <div class="detail-layout">
+        <div class="detail-image-wrap">
+          <img id="detailBoxImage" class="detail-image hidden" alt="게임 박스 이미지" />
+          <div id="detailImageFallback" class="detail-image-fallback">박스 이미지 준비중</div>
+        </div>
+        <div class="detail-content">
+          <h2 id="detailTitle"></h2>
+          <p id="detailPrequel" class="detail-prequel"></p>
+          <p id="detailPlayers" class="detail-players"></p>
+          <button id="enterGameBtn" type="button">입장</button>
+        </div>
+      </div>
+      <p id="detailCopyright" class="copyright-text"></p>
+    </section>
+
+    <section class="hidden" id="gmView">
+      <div class="app-shell">
+        <div class="slide-frame">
+          <header class="top-bar">
+            <div class="header-title" id="headerTitle">게임 흐름 요약</div>
+            <button class="header-info-btn hidden" id="headerPartInfoBtn" type="button" data-role="part-info-open" aria-label="현재 순서 규칙 안내">i</button>
+            <div class="header-controls">
+              <button class="header-part-end-btn hidden" id="headerPartEndBtn" type="button" data-role="part-end-open">이야기 카드 A 공개</button>
+              <button class="header-part-end-btn hidden" id="headerPart2EndBtn" type="button" data-role="part2-end-open">이야기 카드 B 공개</button>
+              <button class="rules-book-btn" id="headerRulesBookBtn" type="button" data-role="rules-book-open" style="display:none;" aria-label="규칙 열기">
+                <svg class="rules-book-icon" viewBox="0 0 64 48" aria-hidden="true" focusable="false">
+                  <path d="M3.5 34.5L10.5 11.5c7 2 14 0 21.5 5.8 7.5-5.8 14.5-3.8 21.5-5.8l7 23c-10.5-2-19.6-.7-28.5 6-8.9-6.7-18-8-28.5-6Z" />
+                  <path d="M32 17v23" />
+                  <path d="M8 30c9-2 17-.7 24 6" />
+                  <path d="M56 30c-9-2-17-.7-24 6" />
+                </svg>
+                <span class="sr-only">규칙</span>
+              </button>
+              <div id="bgmPanel" class="bgm-panel hidden" aria-label="배경음 제어">
+                <button id="bgmMuteBtn" type="button" class="bgm-btn">음소거</button>
+                <input id="bgmVolumeRange" type="range" min="0" max="1" step="0.05" value="0.5" aria-label="음량" />
+              </div>
+              <div class="page-indicator">
+                <span id="pageNow">1</span> / <span id="pageTotal">1</span>
+              </div>
+              <div class="nav-buttons">
+                <button id="prevBtn" type="button" aria-label="이전">&lt;</button>
+                <button id="nextBtn" type="button" aria-label="다음">&gt;</button>
+              </div>
+            </div>
+          </header>
+
+          <main class="slides-container" id="slidesContainer"></main>
+        </div>
+      </div>
+      <p id="gmCopyright" class="copyright-text"></p>
+    </section>
+  </div>
 
   <div class="confirm-modal hidden" id="confirmModal" aria-hidden="true">
     <div class="confirm-modal-backdrop" data-role="confirm-cancel"></div>
@@ -751,6 +106,7 @@
       </div>
     </div>
   </div>
+
   <div class="npc-modal hidden" id="npcModal" aria-hidden="true">
     <div class="npc-modal-backdrop" data-role="npc-modal-close"></div>
     <div class="npc-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="npcModalTitle">
@@ -763,6 +119,7 @@
       </div>
     </div>
   </div>
+
   <div class="rules-modal hidden" id="rulesModal" aria-hidden="true">
     <div class="rules-modal-backdrop" data-role="rules-modal-close"></div>
     <div class="rules-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="rulesModalTitle">
@@ -770,34 +127,13 @@
         <h2 class="rules-modal-title" id="rulesModalTitle">규칙</h2>
         <button class="rules-close-btn" type="button" data-role="rules-modal-close" aria-label="팝업 닫기">닫기</button>
       </div>
-      <div class="rules-modal-tabs" id="rulesModalTabs" role="tablist" aria-label="규칙 탭">
-        <button class="rules-modal-tab active" type="button" role="tab" aria-selected="true" data-role="modal-rule-tab" data-rule-key="P">능력과 파워</button>
-        <button class="rules-modal-tab" type="button" role="tab" aria-selected="false" data-role="modal-rule-tab" data-rule-key="S">승점</button>
-        <button class="rules-modal-tab" type="button" role="tab" aria-selected="false" data-role="modal-rule-tab" data-rule-key="R">전체</button>
-      </div>
+      <div class="rules-modal-tabs" id="rulesModalTabs" role="tablist" aria-label="규칙 탭"></div>
       <div class="rules-modal-body" id="rulesModalBody" aria-live="polite">
         <p>규칙 내용을 불러오는 중입니다.</p>
       </div>
     </div>
   </div>
+
   <script src="app.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

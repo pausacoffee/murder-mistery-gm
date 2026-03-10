@@ -34,6 +34,11 @@ Create or update:
 - Voting/selection ceremony: `vote` or `selection`
 - Final instruction: `ending`
 
+## Order Diagram Rule
+- When building an order or flow diagram, do not render textual arrows such as `→`, `=>`, or `->`.
+- Use CSS or SVG vector arrows instead.
+- Reuse the repository's existing arrow component/style when available.
+
 ## Transition Guards
 If the rulebook requires a check before entering the next part, encode it as package data when supported.
 

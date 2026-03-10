@@ -13,6 +13,20 @@
       "copyrightNotice": "©KADOKAWA-GroupSNE. All rights reserved.",
       "searchText": "분가 bunga hunke 5인 6인 저택 죽음 추리",
       "gamePath": "games/bunga/game.json"
+    },
+    {
+      "id": "crime-punishment-bibliotheca",
+      "routeName": "crime-and-punishment-in-bibliotheca",
+      "name": "죄와 벌의 도서관",
+      "nameEn": "Crime and Punishment in Bibliotheca",
+      "playerMin": 5,
+      "playerMax": 6,
+      "recommendedPlayers": "5~6인",
+      "boxImage": "",
+      "synopsis": "도서관에서 벌어진 관장 살인 사건. 각 플레이어는 캐릭터를 연기하며 조사와 발표를 거쳐 진상을 추리하고, 마지막에 투표와 점수 공개를 진행합니다.",
+      "copyrightNotice": "© 2021 GroupSNE & cosaic All rights reserved.",
+      "searchText": "죄와 벌의 도서관 Crime and Punishment in Bibliotheca 도서관 살인 사건 5인 6인 추리",
+      "gamePath": "games/crime-punishment-bibliotheca/game.json"
     }
   ]
 }

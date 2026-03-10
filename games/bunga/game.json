@@ -9,6 +9,38 @@
     "defaultTrack": "",
     "slideTracks": {}
   },
+  "headerActions": [
+    {
+      "id": "story-card-a",
+      "label": "이야기 카드 A 공개",
+      "showOn": {
+        "type": "slideRange",
+        "startTitlePrefix": "[파트 1] 라운드",
+        "endTitlePrefix": "[파트 1] 라운드"
+      },
+      "action": {
+        "type": "confirmJump",
+        "confirmTitle": "이야기 카드 A",
+        "confirmSubtitle": "파트 2",
+        "targetAnchor": "part2-start"
+      }
+    },
+    {
+      "id": "story-card-b",
+      "label": "이야기 카드 B 공개",
+      "showOn": {
+        "type": "slideRange",
+        "startAnchor": "part2-start",
+        "endTitlePrefix": "[파트 2] 라운드"
+      },
+      "action": {
+        "type": "confirmJump",
+        "confirmTitle": "이야기 카드 B",
+        "confirmSubtitle": "파트 3",
+        "targetAnchor": "part3-start"
+      }
+    }
+  ],
   "rules": {
     "source": "bunga",
     "tabs": [

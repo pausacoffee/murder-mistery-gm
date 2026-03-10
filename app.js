@@ -844,7 +844,8 @@ class RulesModal {
   }
 
   getRuleTopicByKey(ruleKey) {
-    return RULE_TAB_TOPIC_MAP[ruleKey] || '';
+    const matched = this.tabConfig.find((tab) => tab.key === ruleKey);
+    return matched?.topic || RULE_TAB_TOPIC_MAP[ruleKey] || matched?.label || '';
   }
 
   renderRuleTab(ruleKey) {
@@ -859,7 +860,7 @@ class RulesModal {
   }
 
   open(topic, options = {}) {
-    const tabKeyByTopic = Object.keys(RULE_TAB_TOPIC_MAP).find((key) => RULE_TAB_TOPIC_MAP[key] === topic) || '';
+    const tabKeyByTopic = this.tabConfig.find((tab) => (tab.topic || RULE_TAB_TOPIC_MAP[tab.key] || tab.label) === topic)?.key || '';
     const forceTabbed = options.forceTabbed === true;
     const useTabbedMode = forceTabbed || Boolean(tabKeyByTopic);
 
@@ -893,8 +894,7 @@ class SlideRenderer {
     this.pageNow = options.pageNow;
     this.pageTotal = options.pageTotal;
     this.headerPartInfoBtn = options.headerPartInfoBtn;
-    this.headerPartEndBtn = options.headerPartEndBtn;
-    this.headerPart2EndBtn = options.headerPart2EndBtn;
+    this.headerActionList = options.headerActionList;
     this.headerRulesBookBtn = options.headerRulesBookBtn;
     this.rulesModal = options.rulesModal;
     this.bgmController = options.bgmController;
@@ -903,6 +903,8 @@ class SlideRenderer {
     this.timerManager = new TimerManager();
     this.timerWidgets = [];
     this.slides = [];
+    this.gameConfig = null;
+    this.headerActions = [];
     this.currentIndex = 0;
     this.part1StartIndex = 8;
     this.part1EndIndex = 19;
@@ -921,6 +923,7 @@ class SlideRenderer {
 
   async loadGame(game) {
     this.currentIndex = 0;
+    this.gameConfig = game;
 
     const slidesHtml = await fetch(game.slidesHtmlPath).then((res) => res.text());
     const temp = document.createElement('div');
@@ -938,6 +941,7 @@ class SlideRenderer {
 
     this.pageTotal.textContent = String(this.slides.length);
     this.refreshPartRanges();
+    this.setupHeaderActions();
     this.setupInlineRules();
     this.setupTimers();
     this.decorateStoryText();
@@ -969,6 +973,68 @@ class SlideRenderer {
       if ((this.slides[i].dataset.title || '').startsWith(prefix)) return i;
     }
     return -1;
+  }
+
+  resolveHeaderActionRange(rangeConfig) {
+    if (!rangeConfig || rangeConfig.type !== 'slideRange') {
+      return null;
+    }
+
+    const start = rangeConfig.startAnchor
+      ? this.findSlideIndexByAnchor(rangeConfig.startAnchor)
+      : this.findSlideIndexByTitlePrefix(rangeConfig.startTitlePrefix || '');
+    const end = rangeConfig.endAnchor
+      ? this.findSlideIndexByAnchor(rangeConfig.endAnchor)
+      : this.findLastSlideIndexByTitlePrefix(rangeConfig.endTitlePrefix || rangeConfig.startTitlePrefix || '');
+
+    if (start < 0 || end < 0) {
+      return null;
+    }
+
+    return { start, end };
+  }
+
+  setupHeaderActions() {
+    this.headerActions = Array.isArray(this.gameConfig?.headerActions) ? this.gameConfig.headerActions : [];
+    if (!this.headerActionList) return;
+
+    this.headerActionList.innerHTML = '';
+    this.headerActions.forEach((action) => {
+      const btn = document.createElement('button');
+      btn.className = 'header-part-end-btn hidden';
+      btn.type = 'button';
+      btn.dataset.role = 'header-action';
+      btn.dataset.actionId = action.id || '';
+      btn.textContent = action.label || '추가 액션';
+      this.headerActionList.appendChild(btn);
+    });
+  }
+
+  updateHeaderActions(activeIndex) {
+    if (!this.headerActionList) return;
+
+    const buttons = Array.from(this.headerActionList.querySelectorAll('[data-role="header-action"]'));
+    buttons.forEach((button) => {
+      const action = this.headerActions.find((item) => item.id === button.dataset.actionId);
+      const range = this.resolveHeaderActionRange(action?.showOn);
+      const isVisible = Boolean(action && range && activeIndex >= range.start && activeIndex <= range.end);
+      button.classList.toggle('hidden', !isVisible);
+    });
+
+    this.headerActionList.classList.toggle('hidden', !buttons.some((button) => !button.classList.contains('hidden')));
+  }
+
+  handleHeaderAction(actionId) {
+    const action = this.headerActions.find((item) => item.id === actionId);
+    if (!action?.action) return;
+
+    if (action.action.type === 'confirmJump') {
+      const target = action.action.targetAnchor ? this.findSlideIndexByAnchor(action.action.targetAnchor) : -1;
+      const message = `<strong class="confirm-primary-line">${action.action.confirmTitle || action.label || '확인'}</strong>가 공개되었습니까?<br><span class="confirm-warning-line">${action.action.confirmSubtitle || ''}</span>로 진입합니다.`;
+      this.openConfirmModal(message, () => {
+        if (target >= 0) this.renderSlide(target);
+      });
+    }
   }
 
   setupTimers() {
@@ -1136,8 +1202,7 @@ class SlideRenderer {
     this.headerPartInfoBtn.classList.toggle('hidden', !showPartInfo);
     this.headerPartInfoBtn.setAttribute('aria-hidden', showPartInfo ? 'false' : 'true');
 
-    this.headerPartEndBtn.classList.toggle('hidden', !this.isPart1Slide(boundedIndex));
-    this.headerPart2EndBtn.classList.toggle('hidden', !this.isPart2Slide(boundedIndex));
+    this.updateHeaderActions(boundedIndex);
     this.headerRulesBookBtn.style.display = boundedIndex >= 6 ? 'inline-flex' : 'none';
 
     this.updateTimerActionLabel(currentSlide, partInfoTitle);
@@ -1145,34 +1210,11 @@ class SlideRenderer {
     this.bgmController.updateBySlide(boundedIndex);
   }
 
-  openPart2EnterConfirm() {
-    const message = '<strong class="confirm-primary-line">이야기 카드 A</strong>가 공개되었습니까?<br><span class="confirm-warning-line">파트 2</span>로 진입합니다.';
-    this.openConfirmModal(message, () => {
-      if (this.part2StartIndex >= 0) this.renderSlide(this.part2StartIndex);
-    });
-  }
-
-  openPart3EnterConfirm() {
-    const target = this.findSlideIndexByAnchor('part3-start');
-    const message = '<strong class="confirm-primary-line">이야기 카드 B</strong>가 공개되었습니까?<br><span class="confirm-warning-line">파트 3</span>로 진입합니다.';
-    this.openConfirmModal(message, () => {
-      if (target >= 0) this.renderSlide(target);
-    });
-  }
-
   goPrev() {
     this.renderSlide(this.currentIndex - 1);
   }
 
   goNext() {
-    if (this.currentIndex === this.part1EndIndex) {
-      this.openPart2EnterConfirm();
-      return;
-    }
-    if (this.currentIndex === this.part2EndIndex) {
-      this.openPart3EnterConfirm();
-      return;
-    }
     this.renderSlide(this.currentIndex + 1);
   }
 
@@ -1251,8 +1293,7 @@ class MultiGameApp {
       pageNow: document.getElementById('pageNow'),
       pageTotal: document.getElementById('pageTotal'),
       headerPartInfoBtn: document.getElementById('headerPartInfoBtn'),
-      headerPartEndBtn: document.getElementById('headerPartEndBtn'),
-      headerPart2EndBtn: document.getElementById('headerPart2EndBtn'),
+      headerActionList: document.getElementById('headerActionList'),
       headerRulesBookBtn: document.getElementById('headerRulesBookBtn'),
       rulesModal: this.rulesModal,
       bgmController: this.bgmController,
@@ -1427,17 +1468,14 @@ class MultiGameApp {
         return;
       }
 
-      if (event.target.closest('[data-role="part-end-open"]')) {
-        this.slideRenderer.openPart2EnterConfirm();
-        return;
-      }
-      if (event.target.closest('[data-role="part2-end-open"]')) {
-        this.slideRenderer.openPart3EnterConfirm();
+      const headerActionTarget = event.target.closest('[data-role="header-action"]');
+      if (headerActionTarget) {
+        this.slideRenderer.handleHeaderAction(headerActionTarget.dataset.actionId || '');
         return;
       }
       if (event.target.closest('[data-role="rules-book-open"]')) {
         const activeKey = this.rulesModal.activeRuleTabKey || 'P';
-        const topic = RULE_TAB_TOPIC_MAP[activeKey] || '규칙';
+        const topic = this.rulesModal.getRuleTopicByKey(activeKey) || '규칙';
         this.rulesModal.open(topic, { forceTabbed: true, ruleKey: activeKey });
         return;
       }
@@ -1616,10 +1654,19 @@ class MultiGameApp {
           ${game.boxImage ? `<img class="game-card-image" src="${game.boxImage}" alt="${game.name} 박스 이미지" />` : '<div class="game-card-image-fallback">BOX ART</div>'}
         </div>
         <div class="game-card-body">
-          <h3>${game.name}</h3>
-          <p class="game-card-players">인원: ${game.playerMin}~${game.playerMax}인</p>
-          <p class="game-card-synopsis">${game.synopsis || ''}</p>
-          <button type="button" data-role="game-open" data-game-id="${game.id}">게임 열기</button>
+          <h3 class="game-card-title">${game.name}</h3>
+          <div class="game-card-spacer" aria-hidden="true"></div>
+          <p class="game-card-players" aria-label="플레이 인원 ${game.playerMin}명부터 ${game.playerMax}명">
+            <span class="game-card-players-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false">
+                <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3Z" />
+                <path d="M8 11c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3Z" />
+                <path d="M8 13c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13Z" />
+                <path d="M16 13c-.29 0-.62.02-.97.05 1.16.84 1.97 1.96 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5Z" />
+              </svg>
+            </span>
+            <span class="game-card-players-range">${game.playerMin}~${game.playerMax}</span>
+          </p>
         </div>
       `;
       this.gameListEl.appendChild(card);

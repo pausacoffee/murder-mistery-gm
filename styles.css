@@ -72,33 +72,26 @@
 }
 
 .game-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .game-card {
   border: 1px solid #d5dfed;
   border-radius: 12px;
-  padding: 12px;
+  padding: 10px 14px;
   background: #f8fbff;
   display: grid;
-  grid-template-columns: 112px 1fr;
+  grid-template-columns: 72px minmax(0, 1fr);
   gap: 14px;
-}
-
-.game-card h3 {
-  margin: 0 0 8px;
-}
-
-.game-card p {
-  margin: 0 0 12px;
+  align-items: center;
 }
 
 .game-card-image-wrap {
-  width: 112px;
-  height: 148px;
-  border-radius: 12px;
+  width: 72px;
+  height: 96px;
+  border-radius: 10px;
   overflow: hidden;
   border: 1px solid #d7dfeb;
   background: #eef2f7;
@@ -125,23 +118,49 @@
 .game-card-body {
   min-width: 0;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  gap: 12px;
+}
+
+.game-card-title {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 800;
+  color: #111111;
+}
+
+.game-card-spacer {
+  flex: 1 1 auto;
+  min-width: 12px;
 }
 
 .game-card-players {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-weight: 700;
   color: #2d3748;
+  white-space: nowrap;
 }
 
-.game-card-synopsis {
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  line-height: 1.55;
-  min-height: 6.2em;
-  color: #526174;
+.game-card-players-icon {
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #5b6472;
+}
+
+.game-card-players-icon svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.game-card-players-range {
+  letter-spacing: 0.01em;
 }
 
 .empty-message {
@@ -336,6 +355,12 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.header-action-list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .header-info-btn {
@@ -1348,13 +1373,26 @@ button:disabled {
 
 @media (max-width: 900px) {
   .game-card {
-    grid-template-columns: 88px 1fr;
-    gap: 12px;
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 10px;
+    padding: 8px 10px;
   }
 
   .game-card-image-wrap {
-    width: 88px;
-    height: 116px;
+    width: 56px;
+    height: 74px;
+  }
+
+  .game-card-body {
+    gap: 8px;
+  }
+
+  .game-card-title {
+    font-size: 0.94rem;
+  }
+
+  .game-card-players {
+    font-size: 0.88rem;
   }
 
   .slide-frame {
@@ -2242,9 +2280,12 @@ button:disabled {
     margin: 0;
   }
 
-  .header-controls .header-part-end-btn {
+  .header-controls .header-action-list {
     grid-area: end;
-    align-self: end;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    gap: 6px;
   }
 
   .header-controls .nav-buttons {

@@ -35,11 +35,15 @@
       </div>
       <div id="gameList" class="game-grid" aria-live="polite"></div>
     </section>
+    <div class="catalog-term-actions" id="catalogTermActions">
+      <button class="contact-link-btn" type="button" data-role="contact-open">contact us</button>
+    </div>
     <p class="catalog-term-text" id="catalogTermText">
       이 서비스는 비공식 팬 메이드 GM 도구입니다.<br />
       모든 시나리오 및 게임 콘텐츠의 저작권은 각 원작자 및 퍼블리셔에게 있습니다.<br />
       권리자 요청 시 관련 콘텐츠는 수정 또는 삭제될 수 있습니다.<br />
     </p>
+
 
     <section class="view-card hidden" id="detailView">
       <div class="detail-header-row">
@@ -65,6 +69,9 @@
       권리자 요청 시 관련 콘텐츠는 수정 또는 삭제될 수 있습니다.<br />
       <strong>플레이를 위해서는 원본 보드게임 또는 시나리오가 필요합니다.</strong>
     </p>
+    <div class="catalog-term-actions hidden" id="detailTermActions">
+      <button class="contact-link-btn" type="button" data-role="contact-open">contact us</button>
+    </div>
 
     <section class="hidden" id="gmView">
       <div class="app-shell">
@@ -141,6 +148,22 @@
       <div class="rules-modal-body" id="rulesModalBody" aria-live="polite">
         <p>규칙 내용을 불러오는 중입니다.</p>
       </div>
+    </div>
+  </div>
+
+  <div class="contact-modal hidden" id="contactModal" aria-hidden="true">
+    <div class="contact-modal-backdrop" data-role="contact-close"></div>
+    <div class="contact-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="contactModalTitle">
+      <div class="contact-modal-header">
+        <h2 class="contact-modal-title" id="contactModalTitle">Contact us</h2>
+        <button class="contact-close-btn" type="button" data-role="contact-close" aria-label="팝업 닫기">닫기</button>
+      </div>
+      <div class="contact-modal-meta">
+        <span class="contact-step-badge" id="contactStepBadge">1 / 3</span>
+        <p class="contact-step-lead" id="contactStepLead">문의 유형을 선택해 주세요.</p>
+      </div>
+      <div class="contact-modal-body" id="contactModalBody" aria-live="polite"></div>
+      <div class="contact-modal-actions" id="contactModalActions"></div>
     </div>
   </div>
 

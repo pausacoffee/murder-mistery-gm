@@ -5,6 +5,19 @@ const RULE_TAB_TOPIC_MAP = {
   R: '전체',
 };
 
+const CONTACT_EMAIL = 'skgus43@gmail.com';
+
+const CONTACT_REQUEST_TYPES = {
+  takedown: {
+    label: '권리자 삭제 요청',
+    lead: '권리 보유자 본인 또는 정식 대리인만 요청해 주세요.',
+  },
+  feedback: {
+    label: '피드백',
+    lead: '오탈자, 사용성, 레이아웃 문제를 알려주세요.',
+  },
+};
+
 const BUNGA_RULE_CONTENT_MAP = {
   '행선지 상의 및 결정': `
     <div class="part-rule-preview">
@@ -1253,6 +1266,11 @@ class MultiGameApp {
       sort: 'name',
       query: '',
       pendingConfirmAction: null,
+      contactDraft: {
+        step: 1,
+        type: '',
+        gameId: '',
+      },
     };
 
     this.catalogView = document.getElementById('catalogView');
@@ -1273,6 +1291,11 @@ class MultiGameApp {
     this.confirmModal = document.getElementById('confirmModal');
     this.confirmModalMessage = document.getElementById('confirmModalMessage');
     this.npcModal = document.getElementById('npcModal');
+    this.contactModal = document.getElementById('contactModal');
+    this.contactStepBadge = document.getElementById('contactStepBadge');
+    this.contactStepLead = document.getElementById('contactStepLead');
+    this.contactModalBody = document.getElementById('contactModalBody');
+    this.contactModalActions = document.getElementById('contactModalActions');
 
     this.rulesModal = new RulesModal(
       document.getElementById('rulesModal'),
@@ -1443,6 +1466,36 @@ class MultiGameApp {
         this.rulesModal.close();
         return;
       }
+      if (event.target.closest('[data-role="contact-open"]')) {
+        this.openContactModal();
+        return;
+      }
+      if (event.target.closest('[data-role="contact-close"]')) {
+        this.closeContactModal();
+        return;
+      }
+      const contactTypeTarget = event.target.closest('[data-role="contact-type-select"]');
+      if (contactTypeTarget) {
+        this.selectContactType(contactTypeTarget.dataset.contactType || '');
+        return;
+      }
+      const contactGameTarget = event.target.closest('[data-role="contact-game-select"]');
+      if (contactGameTarget) {
+        this.selectContactGame(contactGameTarget.dataset.gameId || '');
+        return;
+      }
+      if (event.target.closest('[data-role="contact-back"]')) {
+        this.goBackContactStep();
+        return;
+      }
+      if (event.target.closest('[data-role="contact-next"]')) {
+        this.goNextContactStep();
+        return;
+      }
+      if (event.target.closest('[data-role="contact-mail-open"]')) {
+        this.openContactMailDraft();
+        return;
+      }
       if (event.target.closest('[data-role="npc-modal-close"]')) {
         this.closeNpcModal();
         return;
@@ -1604,17 +1657,239 @@ class MultiGameApp {
     this.npcModal.setAttribute('aria-hidden', 'true');
   }
 
+  openContactModal() {
+    this.state.contactDraft = {
+      step: 1,
+      type: '',
+      gameId: this.state.selectedGameId || '',
+    };
+    this.renderContactModal();
+    this.contactModal.classList.remove('hidden');
+    this.contactModal.setAttribute('aria-hidden', 'false');
+  }
+
+  closeContactModal() {
+    this.contactModal.classList.add('hidden');
+    this.contactModal.setAttribute('aria-hidden', 'true');
+  }
+
+  selectContactType(type) {
+    if (!CONTACT_REQUEST_TYPES[type]) return;
+    this.state.contactDraft.type = type;
+    this.state.contactDraft.step = 2;
+    this.renderContactModal();
+  }
+
+  selectContactGame(gameId) {
+    if (!this.state.games.some((game) => game.id === gameId)) return;
+    this.state.contactDraft.gameId = gameId;
+    this.renderContactModal();
+  }
+
+  goBackContactStep() {
+    const nextStep = Math.max(1, this.state.contactDraft.step - 1);
+    this.state.contactDraft.step = nextStep;
+    this.renderContactModal();
+  }
+
+  goNextContactStep() {
+    if (this.state.contactDraft.step === 2 && !this.state.contactDraft.gameId) return;
+    this.state.contactDraft.step = Math.min(3, this.state.contactDraft.step + 1);
+    this.renderContactModal();
+  }
+
+  getContactGames() {
+    return [...this.state.games].sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+  }
+
+  getContactSelectedGame() {
+    return this.state.games.find((game) => game.id === this.state.contactDraft.gameId) || null;
+  }
+
+  getContactMailDraft() {
+    const typeConfig = CONTACT_REQUEST_TYPES[this.state.contactDraft.type];
+    const game = this.getContactSelectedGame();
+    if (!typeConfig || !game) {
+      return {
+        subject: '',
+        body: '',
+      };
+    }
+
+    if (this.state.contactDraft.type === 'takedown') {
+      return {
+        subject: `[권리자 삭제 요청] ${game.name}`,
+        body: [
+          '안녕하세요. 아래 콘텐츠에 대한 삭제 또는 비공개 처리를 요청드립니다.',
+          '',
+          `[대상 게임] ${game.name}`,
+          '[요청자 성명 / 법인명]',
+          '[소속 또는 대리 관계]',
+          '[연락 가능한 공식 이메일]',
+          '[공식 웹사이트 또는 권리 확인 가능한 주소]',
+          '',
+          '[권리 보유 또는 대리 권한 설명]',
+          '- 원작자 / 퍼블리셔 / 라이선스 보유자 / 정식 대리인 여부를 적어 주세요.',
+          '- 가능하면 상품 페이지, 공식 사이트, 사업자 정보, 권리 고지 페이지 등을 함께 보내 주세요.',
+          '',
+          '[삭제를 요청하는 대상]',
+          '- 어떤 게임명 / 화면 / 문구 / 자료인지 구체적으로 적어 주세요.',
+          '',
+          '[요청 사유]',
+          '- 어떤 권리를 침해한다고 판단하는지 적어 주세요.',
+          '',
+          '[첨부 자료]',
+          '- 권리 확인 자료 또는 공식 도메인에서 확인 가능한 링크',
+          '- 필요 시 캡처 화면',
+          '',
+          '허위 또는 권한 없는 요청은 처리되지 않을 수 있습니다.',
+        ].join('\n'),
+      };
+    }
+
+    return {
+      subject: `[피드백] ${game.name}`,
+      body: [
+        '안녕하세요. 아래 내용으로 피드백을 보냅니다.',
+        '',
+        `[대상 게임] ${game.name}`,
+        '[문제 유형] 오탈자 / 사용성 / 레이아웃 / 기타',
+        '',
+        '[설명]',
+        '- 어떤 화면에서 무엇이 문제였는지 적어 주세요.',
+        '',
+        '[재현 정보]',
+        '- 사용 기기:',
+        '- 브라우저:',
+        '- 가로/세로 모드:',
+        '',
+        '[첨부 권장]',
+        '- 문제 화면 캡처',
+        '- 가능하면 발생 직전 단계 설명',
+      ].join('\n'),
+    };
+  }
+
+  renderContactModal() {
+    const { step, type, gameId } = this.state.contactDraft;
+    const selectedType = CONTACT_REQUEST_TYPES[type] || null;
+    const selectedGame = this.getContactSelectedGame();
+    const mailDraft = this.getContactMailDraft();
+
+    this.contactStepBadge.textContent = `${step} / 3`;
+
+    if (step === 1) {
+      this.contactStepLead.textContent = '문의 유형을 선택해 주세요.';
+      this.contactModalBody.innerHTML = `
+        <div class="contact-option-grid">
+          ${Object.entries(CONTACT_REQUEST_TYPES).map(([typeKey, config]) => `
+            <button class="contact-option-card${type === typeKey ? ' active' : ''}" type="button" data-role="contact-type-select" data-contact-type="${typeKey}">
+              <h3 class="contact-option-card-title">${config.label}</h3>
+              <p>${config.lead}</p>
+            </button>
+          `).join('')}
+        </div>
+      `;
+      this.contactModalActions.innerHTML = `
+        <div class="contact-modal-actions-left">
+          <button class="contact-secondary-btn" type="button" data-role="contact-close">닫기</button>
+        </div>
+        <div class="contact-modal-actions-right"></div>
+      `;
+      return;
+    }
+
+    if (step === 2) {
+      this.contactStepLead.textContent = '대상 게임을 선택해 주세요.';
+      this.contactModalBody.innerHTML = `
+        <div class="contact-game-list">
+          ${this.getContactGames().map((game) => `
+            <button class="contact-game-option${gameId === game.id ? ' active' : ''}" type="button" data-role="contact-game-select" data-game-id="${game.id}">
+              <h3 class="contact-game-option-title">${game.name}</h3>
+            </button>
+          `).join('')}
+        </div>
+      `;
+      this.contactModalActions.innerHTML = `
+        <div class="contact-modal-actions-left">
+          <button class="contact-secondary-btn" type="button" data-role="contact-back">이전</button>
+        </div>
+        <div class="contact-modal-actions-right">
+          <button class="contact-primary-btn" type="button" data-role="contact-next"${gameId ? '' : ' disabled'}>다음</button>
+        </div>
+      `;
+      return;
+    }
+
+    this.contactStepLead.textContent = `${selectedType?.label || '문의'} 메일 작성 안내입니다.`;
+    this.contactModalBody.innerHTML = `
+      <div class="contact-help-box">
+        <h3>${selectedType?.label || '문의'}: ${selectedGame?.name || '-'}</h3>
+        ${type === 'takedown' ? `
+          <p>권리자 본인 또는 정식 대리인만 요청해 주세요. 아래 정보가 있을수록 확인이 빠릅니다.</p>
+          <ul>
+            <li>권리자 성명 또는 법인명</li>
+            <li>공식 이메일 또는 공식 도메인에서 확인 가능한 연락처</li>
+            <li>권리 보유 또는 대리 권한 설명</li>
+            <li>삭제를 원하는 정확한 게임명, 화면, 문구, 캡처</li>
+            <li>가능한 경우 공식 사이트, 상품 페이지, 권리 고지 링크</li>
+          </ul>
+        ` : `
+          <p>오탈자나 사용성 문제는 캡처와 함께 보내 주시면 확인이 빠릅니다.</p>
+          <ul>
+            <li>문제가 보이는 화면 캡처</li>
+            <li>어떤 점이 불편했는지 또는 어떤 문구가 잘못되었는지</li>
+            <li>사용 기기와 브라우저 정보</li>
+            <li>가능하면 재현 순서</li>
+          </ul>
+        `}
+        <div class="contact-mail-preview">
+          <p class="contact-mail-preview-label">To</p>
+          <p class="contact-mail-preview-value">${CONTACT_EMAIL}</p>
+        </div>
+        <div class="contact-mail-preview">
+          <p class="contact-mail-preview-label">Subject</p>
+          <p class="contact-mail-preview-value">${mailDraft.subject}</p>
+        </div>
+        <div class="contact-mail-preview">
+          <p class="contact-mail-preview-label">Body</p>
+          <p class="contact-mail-preview-value">${mailDraft.body}</p>
+        </div>
+        <p class="contact-disclaimer">메일 앱이 열리면 필요한 증빙 자료나 캡처 이미지를 첨부해 주세요.</p>
+        <p class="contact-disclaimer">기본 메일 앱 또는 메일 핸들러가 설정되지 않은 환경에서는 열리지 않을 수 있습니다.</p>
+      </div>
+    `;
+    this.contactModalActions.innerHTML = `
+      <div class="contact-modal-actions-left">
+        <button class="contact-secondary-btn" type="button" data-role="contact-back">이전</button>
+      </div>
+      <div class="contact-modal-actions-right">
+        <button class="contact-primary-btn" type="button" data-role="contact-mail-open">메일 앱 열기</button>
+      </div>
+    `;
+  }
+
+  openContactMailDraft() {
+    const { subject, body } = this.getContactMailDraft();
+    if (!subject) return;
+    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  }
+
   setView(view) {
     const platformTitle = document.getElementById('platformTitle');
     const platformSubtitle = document.getElementById('platformSubtitle');
     const catalogTermText = document.getElementById('catalogTermText');
     const detailTermText = document.getElementById('detailTermText');
+    const catalogTermActions = document.getElementById('catalogTermActions');
+    const detailTermActions = document.getElementById('detailTermActions');
 
     this.catalogView.classList.toggle('hidden', view !== 'catalog');
     this.detailView.classList.toggle('hidden', view !== 'detail');
     this.gmView.classList.toggle('hidden', view !== 'gm');
     catalogTermText?.classList.toggle('hidden', view !== 'catalog');
     detailTermText?.classList.toggle('hidden', view !== 'detail');
+    catalogTermActions?.classList.toggle('hidden', view !== 'catalog');
+    detailTermActions?.classList.toggle('hidden', view !== 'detail');
 
     const isGmView = view === 'gm';
     platformTitle?.classList.toggle('hidden', isGmView);

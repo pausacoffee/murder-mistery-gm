@@ -254,6 +254,28 @@
   color: #445064;
 }
 
+.catalog-term-actions {
+  width: min(1200px, 96vw);
+  margin: 4px auto 0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.contact-link-btn {
+  border: none;
+  background: transparent;
+  padding: 0;
+  color: #5e6b7d;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.contact-link-btn:hover {
+  color: #283445;
+}
+
 .ad-slot {
   border: 1px dashed #b9c8de;
   border-radius: 10px;
@@ -1807,6 +1829,237 @@ button:disabled {
   background: #f4f4f4;
 }
 
+.contact-modal.hidden {
+  display: none !important;
+  pointer-events: none;
+}
+
+.contact-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 43;
+  display: grid;
+  place-items: center;
+}
+
+.contact-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(16, 24, 38, 0.56);
+}
+
+.contact-modal-dialog {
+  position: relative;
+  width: min(720px, 92vw);
+  max-height: min(760px, 88dvh);
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: 0 20px 50px rgba(10, 20, 40, 0.26);
+  overflow: hidden;
+}
+
+.contact-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid var(--border);
+  background: #f8fbff;
+}
+
+.contact-modal-title {
+  margin: 0;
+  font-size: 1.08rem;
+  font-weight: 800;
+}
+
+.contact-close-btn {
+  background: #ffffff;
+  color: #111111;
+  border: 1px solid #cad6e6;
+  min-width: 72px;
+  min-height: 36px;
+}
+
+.contact-modal-meta {
+  padding: 14px 18px 0;
+}
+
+.contact-step-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #ecf3ff;
+  color: #355584;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.contact-step-lead {
+  margin: 10px 0 0;
+  color: #3f4e63;
+  font-size: 0.96rem;
+  font-weight: 700;
+}
+
+.contact-modal-body {
+  flex: 1 1 auto;
+  overflow: auto;
+  padding: 16px 18px 12px;
+}
+
+.contact-option-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.contact-option-card,
+.contact-game-option {
+  width: 100%;
+  border: 1px solid #d4deec;
+  border-radius: 14px;
+  background: #f8fbff;
+  padding: 14px;
+  text-align: left;
+}
+
+.contact-option-card.active,
+.contact-game-option.active {
+  border-color: #111111;
+  box-shadow: inset 0 0 0 1px #111111;
+  background: #ffffff;
+}
+
+.contact-option-card-title,
+.contact-game-option-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #111111;
+}
+
+.contact-option-card p,
+.contact-game-option p {
+  margin: 8px 0 0;
+  color: #536278;
+  line-height: 1.55;
+}
+
+.contact-game-list {
+  display: grid;
+  gap: 10px;
+}
+
+.contact-game-option-meta {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.contact-help-box {
+  border: 1px solid #d5dfed;
+  border-radius: 14px;
+  background: #f8fbff;
+  padding: 16px;
+}
+
+.contact-help-box h3 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+}
+
+.contact-help-box p {
+  margin: 0;
+  color: #47566c;
+  line-height: 1.6;
+}
+
+.contact-help-box ul {
+  margin: 10px 0 0;
+  padding-left: 18px;
+  color: #47566c;
+  line-height: 1.7;
+}
+
+.contact-help-box code {
+  font-size: 0.9em;
+}
+
+.contact-mail-preview {
+  margin-top: 14px;
+  border-top: 1px solid #d7dfeb;
+  padding-top: 14px;
+}
+
+.contact-mail-preview-label {
+  margin: 0 0 6px;
+  color: #5f6d80;
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.contact-mail-preview-value {
+  margin: 0;
+  color: #1d2735;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.contact-disclaimer {
+  margin-top: 12px;
+  color: #7a8698;
+  font-size: 0.82rem;
+}
+
+.contact-modal-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 18px 18px;
+}
+
+.contact-modal-actions-left,
+.contact-modal-actions-right {
+  display: flex;
+  gap: 8px;
+}
+
+.contact-secondary-btn {
+  background: #ffffff;
+  color: #111111;
+  border: 1px solid #cad6e6;
+}
+
+.contact-secondary-btn:hover {
+  background: #f3f6fb;
+  color: #111111;
+}
+
+.contact-primary-btn {
+  background: #111111;
+  color: #ffffff;
+}
+
+.contact-primary-btn:hover {
+  background: #000000;
+  color: #ffffff;
+}
+
+.contact-primary-btn:disabled {
+  background: #c7d0dc;
+  border-color: #c7d0dc;
+  cursor: default;
+}
+
 
 
 
@@ -1821,6 +2074,26 @@ button:disabled {
   font-weight: 800;
   font-size: 0.82rem;
   white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .contact-option-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .contact-modal-actions-left,
+  .contact-modal-actions-right {
+    width: 100%;
+  }
+
+  .contact-modal-actions-left button,
+  .contact-modal-actions-right button {
+    flex: 1 1 0;
+  }
 }
 
 .header-part-end-btn:hover {

@@ -95,6 +95,12 @@ document.getElementById('detailBackBtn')?.addEventListener('click', () => this.n
 - [규칙 팝업 매핑](docs/RULES-MAPPING.md)
 - [문구/표기 가이드](docs/UI-WRITING-GUIDE.md)
 
+## 보안 메모
+- 현재는 정적 사이트 기준으로 `vercel.json`에 최소 보안 헤더를 적용합니다.
+- 외부 스크립트, 외부 폰트, 외부 API를 추가할 때는 `Content-Security-Policy`를 함께 검토해야 합니다.
+- 비밀값(API 키, 토큰, 비공개 메일 인증값 등)은 코드나 JSON 파일에 직접 넣지 않습니다.
+- Vercel 배포에서 비밀값이 필요해지면 코드가 아니라 Environment Variables로 관리합니다.
+
 ## 검증
 - `node --check app.js`
 - 카탈로그 -> 상세 -> GM 진입 확인

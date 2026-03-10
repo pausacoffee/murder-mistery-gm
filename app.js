@@ -1440,7 +1440,7 @@ class MultiGameApp {
       this.renderCatalog();
     });
 
-    document.getElementById('detailBackBtn').addEventListener('click', () => this.navigateToCatalog());
+    document.getElementById('detailBackBtn')?.addEventListener('click', () => this.navigateToCatalog());
     document.getElementById('enterGameBtn').addEventListener('click', () => {
       if (this.selectedGame) {
         this.navigateToGameGm(this.selectedGame.id);

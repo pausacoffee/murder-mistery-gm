@@ -1,0 +1,14 @@
+:root {
+  --platform-card-bg: #ffffff;
+  --frame-bg: #ffffff;
+  --accent: #1f5fbf;
+  --accent-strong: #174a95;
+  --text: #1b1f24;
+  --muted: #6d7785;
+  --danger: #8f1d1d;
+  --border: #d8dee8;
+}
+
+body {
+  background: radial-gradient(circle at top, #ffffff 0%, #e9eef6 65%, #dce5f2 100%);
+}

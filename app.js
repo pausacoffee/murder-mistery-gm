@@ -1279,6 +1279,7 @@ class MultiGameApp {
     this.gameListEl = document.getElementById('gameList');
     this.gameSearchInput = document.getElementById('gameSearchInput');
     this.gameSortSelect = document.getElementById('gameSortSelect');
+    this.gameThemeStylesheet = document.getElementById('gameThemeStylesheet');
 
     this.detailTitle = document.getElementById('detailTitle');
     this.detailPrequel = document.getElementById('detailPrequel');
@@ -1657,6 +1658,16 @@ class MultiGameApp {
     this.npcModal.setAttribute('aria-hidden', 'true');
   }
 
+  applyGameTheme(game) {
+    if (!this.gameThemeStylesheet) return;
+    const themeName = game?.theme;
+    if (!themeName || themeName === 'default') {
+      this.gameThemeStylesheet.removeAttribute('href');
+      return;
+    }
+    this.gameThemeStylesheet.setAttribute('href', `styles/themes/${themeName}.css`);
+  }
+
   openContactModal() {
     this.state.contactDraft = {
       step: 1,
@@ -1889,6 +1900,10 @@ class MultiGameApp {
     const isGmView = view === 'gm';
     platformTitle?.classList.toggle('hidden', isGmView);
     platformSubtitle?.classList.toggle('hidden', isGmView);
+
+    if (view === 'catalog') {
+      this.applyGameTheme(null);
+    }
   }
 
   getSortedGames() {
@@ -1952,6 +1967,8 @@ class MultiGameApp {
     const game = this.selectedGame;
     if (!game) return;
 
+    this.applyGameTheme(game);
+
     this.detailTitle.textContent = game.name;
     this.detailPrequel.textContent = game.synopsis || game.prequel || '';
     this.detailPlayers.textContent = `추천 인원: ${game.recommendedPlayers || `${game.playerMin}~${game.playerMax}인`}`;
@@ -1973,6 +1990,7 @@ class MultiGameApp {
     const game = await this.loadGamePackage(this.state.selectedGameId);
     if (!game) return;
 
+    this.applyGameTheme(game);
     this.rulesModal.configure(game);
     await this.slideRenderer.loadGame(game);
     this.bgmController.applyGame(game);

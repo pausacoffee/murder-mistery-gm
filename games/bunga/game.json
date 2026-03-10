@@ -3,6 +3,7 @@
   "id": "bunga",
   "name": "분가",
   "routeName": "hunke",
+  "theme": "bunga",
   "slidesHtmlPath": "games/bunga/slides.html",
   "bgmEnabled": false,
   "bgm": {

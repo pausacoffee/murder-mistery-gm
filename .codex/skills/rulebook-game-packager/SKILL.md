@@ -14,6 +14,7 @@ Create or update:
 - `games/<id>/slides.html` for migration-safe output, or `games/<id>/slides.json` if the renderer supports it
 - `games/<id>/rules.json` when rule modal content is externalized
 - `games/<id>/assets/` references only when the asset is actually available
+- add `theme` in `game.json` only when a real override is needed; otherwise rely on `styles/themes/default.css`
 
 ## Workflow
 1. Extract metadata: title, player counts, synopsis, aliases for search.
@@ -49,6 +50,8 @@ Until transitions are fully data-driven, record the required trigger explicitly 
 - Keep catalog data short and search-oriented.
 - Keep package data execution-oriented.
 - Prefer repository schema consistency over mirroring the PDF layout exactly.
+- Do not assume every game needs its own theme CSS file.
+- If a game has no distinctive visual override, leave it on the default theme and keep styling changes in shared CSS layers.
 
 ## Review Handoff
 At the end, clearly mark:

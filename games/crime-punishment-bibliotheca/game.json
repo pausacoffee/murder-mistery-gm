@@ -4,6 +4,7 @@
   "name": "죄와 벌의 도서관",
   "nameEn": "Crime and Punishment in Bibliotheca",
   "routeName": "crime-and-punishment-in-bibliotheca",
+  "theme": "crime-punishment-bibliotheca",
   "slidesHtmlPath": "games/crime-punishment-bibliotheca/slides.html",
   "bgmEnabled": false,
   "bgm": {

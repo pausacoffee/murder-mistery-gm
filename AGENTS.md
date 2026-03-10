@@ -15,6 +15,12 @@
 - `games/<id>/slides.html` 또는 향후 `games/<id>/slides.json`: GM 진행용 슬라이드 데이터
 - `games/<id>/rules.json`: 외부 분리된 규칙 모달 데이터
 - `games/<id>/assets/`: 박스 이미지, 오디오 등 관련 에셋
+- `styles/base.css`: 리셋, 공통 타이포그래피, 기본 유틸리티
+- `styles/layout.css`: 뷰 단위 레이아웃, 프레임, 상단 바 같은 큰 구조
+- `styles/components.css`: 카드, 타이머, 모달, 규칙 패널 등 재사용 컴포넌트
+- `styles/responsive.css`: 반응형 대응만 담당하는 미디어 쿼리
+- `styles/themes/default.css`: 모든 게임에 공통 적용되는 기본 테마
+- `styles/themes/<theme>.css`: 선택적인 게임 전용 테마 오버라이드
 
 전체 게임 본문 데이터를 다시 `data/catalog.json`에 넣지 마십시오.
 
@@ -25,6 +31,15 @@
 - 실행용 필드는 게임 패키지에 둡니다: 슬라이드 경로, BGM 설정, 규칙 탭, 커스텀 동작
 - `app.js`에 게임별 하드코딩 분기를 늘리기보다 선언형 데이터 구조를 우선합니다.
 - 헤더의 추가 버튼은 고정 마크업으로 늘리지 말고, 게임 패키지의 `headerActions[]` 데이터로 선언합니다.
+- 게임 패키지에 `theme`를 둘 수 있으나, 전용 테마 파일이 모든 게임에 반드시 필요한 것은 아닙니다.
+- 전용 테마가 없을 때는 항상 `styles/themes/default.css`만으로 정상 표시되어야 합니다.
+
+## 스타일 구조 규칙
+- 새 스타일을 추가할 때는 먼저 `base / layout / components / responsive / themes` 중 어디에 속하는지 판단합니다.
+- 공통 색상, 프레임 배경, 강조색처럼 테마에 따라 바뀔 값은 가능하면 CSS 변수로 두고 `default.css`에서 기본값을 정의합니다.
+- 게임 전용 테마는 `styles/themes/<theme>.css`에만 작성하고, 공통 CSS 파일에 특정 게임명을 직접 넣지 마십시오.
+- 게임별 전용 테마가 없더라도 UI가 온전히 동작해야 합니다. 즉, 기본 테마 fallback은 필수입니다.
+- 단순한 레이아웃 수정 때문에 게임 전용 테마 파일을 만들지 마십시오. 공통 구조 수정은 `layout.css` 또는 `components.css`에서 처리합니다.
 
 ## 헤더 액션 규칙
 - 게임별 헤더 추가 버튼은 `game.json`의 `headerActions[]`로 관리합니다.

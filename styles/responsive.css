@@ -1,0 +1,275 @@
+@media (max-width: 900px) {
+  .game-card {
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 10px;
+    padding: 8px 10px;
+  }
+
+  .game-card-image-wrap {
+    width: 56px;
+    height: 74px;
+  }
+
+  .game-card-body {
+    gap: 8px;
+  }
+
+  .game-card-title {
+    font-size: 0.94rem;
+  }
+
+  .game-card-players {
+    font-size: 0.88rem;
+  }
+
+  .slide-frame {
+    width: min(calc(100vw - 12px), calc((100dvh - 92px) * 16 / 9));
+    max-height: calc(100dvh - 92px);
+    border-radius: 10px;
+  }
+
+  .top-bar {
+    gap: 8px;
+    padding: 10px 12px;
+  }
+
+  .header-title {
+    flex: 0 1 auto;
+    min-width: 0;
+    font-weight: 800;
+    white-space: pre-line;
+    overflow: visible;
+    text-overflow: clip;
+    line-height: 1.25;
+  }
+
+  
+
+  .header-info-btn {
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  border-radius: 999px;
+  background: #111111;
+  color: #ffffff;
+  padding: 0;
+  font-size: 0.88rem;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  margin-left: 4px;
+  margin-right: 0;
+}
+
+  
+  .slide {
+    padding: 18px;
+  }
+
+  .timer-display {
+    min-width: 180px;
+    font-size: 3rem;
+  }
+
+  .timer-adjust-btn {
+    min-width: 58px;
+    height: 52px;
+  }
+
+  .timer-toggle-btn {
+    min-width: 150px;
+  }
+
+  .rules-inline-tab {
+    font-size: 0.9rem;
+  }
+
+  .rules-modal-dialog {
+    width: 92vw;
+    height: min(78vh, 640px);
+  }
+}
+
+@media (max-width: 900px) {
+  .character-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    overflow-y: auto;
+    padding-right: 2px;
+  }
+
+  .character-name {
+    font-size: 0.86rem;
+  }
+
+  .character-illustration {
+    height: 180px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 760px) {
+  .contact-option-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .contact-modal-actions-left,
+  .contact-modal-actions-right {
+    width: 100%;
+  }
+
+  .contact-modal-actions-left button,
+  .contact-modal-actions-right button {
+    flex: 1 1 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .platform-shell {
+    padding: 12px;
+  }
+
+  .side-ad {
+    display: none;
+  }
+
+  .detail-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .bgm-panel {
+    display: none;
+  }
+}
+
+@media (max-width: 1450px) {
+  .side-ad {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .arrow {
+    width: 28px;
+    height: 14px;
+    flex-basis: 28px;
+  }
+
+  .arrow::before {
+    width: 18px;
+  }
+
+  .arrow::after {
+    border-top-width: 4px;
+    border-bottom-width: 4px;
+    border-left-width: 7px;
+  }
+
+  .part1-order-arrow,
+  .part3-flow-arrow {
+    width: 14px;
+    height: 24px;
+    flex-basis: 24px;
+  }
+
+  .part1-order-arrow::before,
+  .part3-flow-arrow::before {
+    height: 14px;
+  }
+}
+
+@media (max-width: 900px) and (orientation: landscape) {
+  .platform-shell {
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .app-shell {
+    padding: 6px;
+    min-height: auto;
+  }
+
+  body.is-mobile .slide-frame {
+    width: var(--mobile-slide-w, calc(100vw - 12px));
+    height: var(--mobile-slide-h, calc((100vw - 12px) * 9 / 16));
+    max-height: none;
+    border-radius: 8px;
+    margin: 0 auto;
+  }
+
+  .top-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .header-title {
+    flex: 0 1 auto;
+    min-width: 0;
+    display: block;
+    align-self: center;
+    margin: 0;
+    white-space: pre-line;
+    line-height: 1.2;
+    max-width: 46%;
+  }
+
+  .header-info-btn {
+    flex: 0 0 auto;
+    align-self: center;
+    margin-left: 4px;
+    margin-right: 0;
+  }
+
+  .header-controls {
+    flex: 0 0 auto;
+    margin-left: auto;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-template-areas:
+      "end rules page"
+      "end nav nav";
+    align-items: center;
+    justify-content: end;
+    column-gap: 8px;
+    row-gap: 4px;
+    min-height: auto;
+    padding-top: 0;
+    overflow: visible;
+  }
+
+  .header-controls .page-indicator {
+    grid-area: page;
+    min-width: auto;
+    font-size: 0.82rem;
+    line-height: 1;
+  }
+
+  .header-controls .rules-book-btn {
+    grid-area: rules;
+    margin: 0;
+  }
+
+  .header-controls .header-action-list {
+    grid-area: end;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    gap: 6px;
+  }
+
+  .header-controls .nav-buttons {
+    grid-area: nav;
+    justify-content: flex-end;
+    margin-top: 0;
+    gap: 4px;
+  }
+
+  .timer-widget {
+    width: min(620px, 100%);
+  }
+}

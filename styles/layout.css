@@ -1,0 +1,305 @@
+.platform-shell {
+  min-height: 100dvh;
+  padding: 20px;
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.side-ad {
+  position: fixed;
+  top: 88px;
+  z-index: 5;
+  width: 160px;
+}
+
+.side-ad-left {
+  left: max(10px, calc((100vw - min(1200px, 96vw)) / 2 - 176px));
+}
+
+.side-ad-right {
+  right: max(10px, calc((100vw - min(1200px, 96vw)) / 2 - 176px));
+}
+
+.platform-header {
+  width: min(1200px, 96vw);
+  margin: 0 auto;
+}
+
+.platform-title {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.platform-subtitle {
+  margin: 4px 0 0;
+  color: #4e5e74;
+  font-weight: 700;
+}
+
+.view-card {
+  width: min(1200px, 96vw);
+  margin: 0 auto;
+  background: var(--platform-card-bg);
+  border: 1px solid #d8dee8;
+  border-radius: 16px;
+  padding: 18px;
+}
+
+.toolbar-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.detail-header-row {
+  margin-bottom: 12px;
+}
+
+#detailBackBtn {
+  background: #173f7a;
+  color: #ffffff;
+  border: 2px solid #173f7a;
+}
+
+#detailBackBtn:hover {
+  background: #0f2d58;
+}
+
+.detail-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 320px) 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.detail-image-wrap {
+  min-height: 220px;
+}
+
+.detail-image {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid #d2ddeb;
+}
+
+.detail-image-fallback {
+  border: 2px dashed #b0bfd5;
+  border-radius: 12px;
+  min-height: 220px;
+  display: grid;
+  place-items: center;
+  color: #586a84;
+  background: #f2f7ff;
+}
+
+.detail-content h2 {
+  margin-top: 0;
+}
+
+#enterGameBtn {
+  background: #0e5f3a;
+  color: #ffffff;
+  border: 2px solid #0e5f3a;
+}
+
+#enterGameBtn:hover {
+  background: #0a452a;
+}
+
+.detail-prequel {
+  line-height: 1.7;
+}
+
+.detail-players {
+  font-weight: 800;
+}
+
+.catalog-term-text {
+  width: min(1200px, 96vw);
+  margin: -2px auto 0;
+  color: #7a8698;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+}
+
+.catalog-term-text strong {
+  font-weight: 800;
+  color: #445064;
+}
+
+.catalog-term-actions {
+  width: min(1200px, 96vw);
+  margin: 4px auto 0;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.ad-slot {
+  border: 1px dashed #b9c8de;
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  color: #52688a;
+  background: #f5f9ff;
+  min-height: 600px;
+  display: grid;
+  place-items: center;
+}
+
+.bgm-panel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  border: 1px solid #d3dbe7;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.bgm-btn {
+  min-width: 84px;
+  padding: 6px 10px;
+}
+
+.orientation-guard {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(8, 13, 22, 0.94);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 24px;
+}
+
+.orientation-guard h2 {
+  margin: 0 0 10px;
+}
+
+.app-shell {
+  width: 100%;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  padding: clamp(8px, 2vw, 20px);
+}
+
+#gmView {
+  width: 100%;
+  min-height: calc(100dvh - 24px);
+  display: flex;
+  flex-direction: column;
+}
+
+.slide-frame {
+  width: min(1200px, calc(100vw - 40px), calc((100dvh - 132px) * 16 / 9));
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  max-height: calc(100dvh - 132px);
+  background: var(--frame-bg);
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  box-shadow: 0 16px 42px rgba(31, 55, 86, 0.14);
+  display: grid;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background: #f8fbff;
+}
+
+.header-title {
+  flex: 0 1 auto;
+  min-width: 0;
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.header-controls {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-action-list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.page-indicator {
+  min-width: 54px;
+  text-align: center;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 4px;
+}
+
+.nav-buttons button {
+  min-width: 34px;
+  padding: 7px 0;
+}
+
+.slides-container {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+.slide {
+  display: none;
+  padding: 24px;
+  height: 100%;
+  overflow: hidden;
+}
+
+.slide.active {
+  display: block;
+}
+
+.slide[data-index="0"].active {
+  display: flex;
+  flex-direction: column;
+}
+
+.slide[data-index="0"] .diagram {
+  flex: 1;
+  align-content: center;
+}
+
+.slide[data-index="0"] .flow-warning {
+  margin-top: auto;
+}
+
+.slide[data-index="3"].active {
+  display: flex;
+  flex-direction: column;
+}
+
+.slide[data-index="3"] .flow-note {
+  margin-top: auto;
+}
+
+.slide[data-index="6"].active {
+  display: grid;
+  place-items: center;
+  text-align: center;
+}

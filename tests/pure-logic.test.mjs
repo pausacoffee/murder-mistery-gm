@@ -5,6 +5,7 @@ const {
   buildCatalogCardMarkup,
   buildContactMailDraft,
   buildThemeHref,
+  getSlideNextConfirmation,
   getNextContactStep,
   getPrevContactStep,
   getVisibleHeaderActionIds,
@@ -92,6 +93,20 @@ describe('pure logic', () => {
     expect(buildThemeHref('bunga')).toBe('styles/themes/bunga.css');
     expect(buildThemeHref('default')).toBe('');
     expect(buildThemeHref('')).toBe('');
+  });
+
+  it('슬라이드 데이터에 다음 진행 확인 문구가 있으면 확인 모달용 메시지를 만든다', () => {
+    expect(getSlideNextConfirmation({})).toBeNull();
+
+    expect(getSlideNextConfirmation({
+      nextConfirmTitle: '설정서 숙지가 끝났습니까?',
+      nextConfirmDetail: '다음 단계로 넘어가면 자기소개를 시작합니다.',
+    })).toEqual({
+      title: '설정서 숙지가 끝났습니까?',
+      detail: '다음 단계로 넘어가면 자기소개를 시작합니다.',
+      note: '',
+      messageHtml: '<strong class="confirm-primary-line">설정서 숙지가 끝났습니까?</strong><br><span class="confirm-warning-line">다음 단계로 넘어가면 자기소개를 시작합니다.</span>',
+    });
   });
 
   it('헤더 액션의 슬라이드 범위를 anchor 또는 title prefix로 계산한다', () => {

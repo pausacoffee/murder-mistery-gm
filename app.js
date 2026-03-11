@@ -3,6 +3,7 @@ const {
   buildCatalogCardMarkup,
   buildContactMailDraft,
   buildThemeHref,
+  getSlideNextConfirmation,
   getNextContactStep,
   formatHeaderTitleForViewport,
   getContactGames,
@@ -958,7 +959,16 @@ class SlideRenderer {
   }
 
   goNext() {
-    this.renderSlide(this.currentIndex + 1);
+    const currentSlide = this.slides[this.currentIndex];
+    const nextConfirm = getSlideNextConfirmation(currentSlide?.dataset);
+    const nextIndex = this.currentIndex + 1;
+
+    if (!nextConfirm) {
+      this.renderSlide(nextIndex);
+      return;
+    }
+
+    this.openConfirmModal(nextConfirm.messageHtml, () => this.renderSlide(nextIndex));
   }
 
   handleKeydown(event) {

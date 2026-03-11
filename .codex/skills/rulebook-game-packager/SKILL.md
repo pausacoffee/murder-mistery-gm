@@ -41,15 +41,21 @@ Create or update:
 - Reuse the repository's existing arrow component/style when available.
 
 ## Transition Guards
-If the rulebook requires a check before entering the next part, encode it as package data when supported.
+If the rulebook requires a check before entering the next part, encode it as slide data when supported.
 
-Until transitions are fully data-driven, record the required trigger explicitly in package placeholder fields or a short review note so the renderer migration is straightforward.
+For `slides.html`, prefer:
+- `data-next-confirm-title`
+- `data-next-confirm-detail`
+- optional `data-next-confirm-note`
+
+Do not add a game-specific JS branch just to block the next slide.
 
 ## Constraints
 - Do not invent missing numbers, names, or conditions.
 - Keep catalog data short and search-oriented.
 - Keep package data execution-oriented.
 - Prefer repository schema consistency over mirroring the PDF layout exactly.
+- If the rulebook is written in Japanese or another language, convert the package output into natural Korean GM-facing copy instead of leaving OCR fragments as-is.
 - Do not assume every game needs its own theme CSS file.
 - If a game has no distinctive visual override, leave it on the default theme and keep styling changes in shared CSS layers.
 

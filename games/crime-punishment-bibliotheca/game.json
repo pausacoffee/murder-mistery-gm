@@ -13,9 +13,10 @@
   },
   "rules": {
     "tabs": [
-      { "key": "P", "label": "개요", "topic": "게임 개요" },
-      { "key": "S", "label": "페이즈", "topic": "페이즈 규칙" },
-      { "key": "R", "label": "주의", "topic": "카드와 주의사항" }
+      { "key": "O", "label": "개요", "topic": "게임 개요" },
+      { "key": "P", "label": "준비", "topic": "준비와 구성물" },
+      { "key": "F", "label": "진행", "topic": "페이즈 진행" },
+      { "key": "C", "label": "주의", "topic": "카드와 공개 규칙" }
     ],
     "contentPath": "games/crime-punishment-bibliotheca/rules.json"
   }

@@ -30,6 +30,10 @@
   - 페이지별 `i` 버튼 단일 규칙 팝업
 - 게임별 동적 헤더 액션
   - `game.json > headerActions[]`
+- 슬라이드 진행 확인 다이얼로그
+  - `data-next-confirm-title`
+  - `data-next-confirm-detail`
+  - `data-next-confirm-note`
 - 문의 모달
   - `권리자 삭제 요청`
   - `피드백`
@@ -76,6 +80,21 @@
 - `game.json`의 `theme` 값이 있으면 `styles/themes/<theme>.css`를 추가 로드합니다.
 - `theme`가 없거나 `default`면 기본 테마만 적용합니다.
 - 게임별 색상/분위기 차이는 가능하면 CSS 변수 override로 처리합니다.
+
+## 슬라이드 진행 확인 규칙
+- 특정 슬라이드에서 바로 다음 단계로 넘어가면 안 되는 경우, 슬라이드 요소에 확인용 `data-*` 속성을 선언합니다.
+- 지원 속성:
+
+```html
+<section
+  class="slide"
+  data-next-confirm-title="모든 플레이어가 설정서를 읽었습니까?"
+  data-next-confirm-detail="다음 단계로 넘어가면 자기소개를 시작합니다."
+  data-next-confirm-note="준비가 끝났을 때만 확인을 눌러 주세요."
+>
+```
+
+- 이 패턴은 게임별 JS 분기를 추가하지 않고도 `"다음으로 넘어가기 전 확인"`을 공통 처리하기 위한 규칙입니다.
 
 ## DOM/이벤트 작성 규칙
 - 필수 DOM은 직접 참조합니다.

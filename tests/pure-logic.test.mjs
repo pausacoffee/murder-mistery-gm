@@ -3,7 +3,10 @@ import logic from '../lib/pure-logic.js';
 
 const {
   buildCatalogCardMarkup,
+  buildCatalogPath,
   buildContactMailDraft,
+  buildDetailPath,
+  buildGmPath,
   buildThemeHref,
   getSlideNextConfirmation,
   getNextContactStep,
@@ -15,7 +18,8 @@ const {
   getRouteNameForGame,
   getSortedGames,
   matchesGameQuery,
-  parseHashRoute,
+  normalizeAppPath,
+  parseAppRoute,
   resolveHeaderActionRange,
 } = logic;
 
@@ -66,12 +70,15 @@ describe('pure logic', () => {
     expect(sortedByPlayers.at(-1).id).toBe('c');
   });
 
-  it('게임 routeName과 해시 경로를 상세/GM 라우트로 해석한다', () => {
+  it('게임 routeName과 path 기반 경로를 상세/GM 라우트로 해석한다', () => {
     expect(getRouteNameForGame(games[0])).toBe('hunke');
     expect(getGameByRouteName(games, 'hunke')?.id).toBe('bunga');
-    expect(parseHashRoute('#/games')).toEqual({ view: 'catalog' });
-    expect(parseHashRoute('#/games/hunke')).toEqual({ view: 'detail', routeName: 'hunke' });
-    expect(parseHashRoute('#/games/hunke/gm')).toEqual({ view: 'gm', routeName: 'hunke' });
+    expect(buildCatalogPath()).toBe('/games');
+    expect(buildDetailPath('hunke')).toBe('/games/hunke');
+    expect(buildGmPath('hunke')).toBe('/games/hunke/gm');
+    expect(parseAppRoute('/games', '')).toEqual({ view: 'catalog' });
+    expect(parseAppRoute('/games/hunke', '')).toEqual({ view: 'detail', routeName: 'hunke' });
+    expect(parseAppRoute('/games/hunke/gm', '')).toEqual({ view: 'gm', routeName: 'hunke' });
   });
 
   it('작은 화면에서는 콜론 뒤 제목을 줄바꿈하고 큰 화면에서는 유지한다', () => {
@@ -90,9 +97,15 @@ describe('pure logic', () => {
   });
 
   it('기본 테마가 아닌 경우에만 게임 전용 테마 경로를 만든다', () => {
-    expect(buildThemeHref('bunga')).toBe('styles/themes/bunga.css');
+    expect(buildThemeHref('bunga')).toBe('/styles/themes/bunga.css');
     expect(buildThemeHref('default')).toBe('');
     expect(buildThemeHref('')).toBe('');
+  });
+
+  it('정적 자원 경로를 루트 기준 경로로 정규화한다', () => {
+    expect(normalizeAppPath('data/catalog.json')).toBe('/data/catalog.json');
+    expect(normalizeAppPath('/games/bunga/game.json')).toBe('/games/bunga/game.json');
+    expect(normalizeAppPath('games/bunga/game.json', 'file:')).toBe('games/bunga/game.json');
   });
 
   it('슬라이드 데이터에 다음 진행 확인 문구가 있으면 확인 모달용 메시지를 만든다', () => {

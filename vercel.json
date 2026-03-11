@@ -1,4 +1,14 @@
 {
+  "rewrites": [
+    {
+      "source": "/games",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/games/(.*)",
+      "destination": "/index.html"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",

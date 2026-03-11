@@ -1,7 +1,10 @@
 ﻿ 
 const {
   buildCatalogCardMarkup,
+  buildCatalogPath,
   buildContactMailDraft,
+  buildDetailPath,
+  buildGmPath,
   buildThemeHref,
   getSlideNextConfirmation,
   getNextContactStep,
@@ -13,7 +16,8 @@ const {
   getRouteNameForGame,
   getSortedGames,
   getVisibleHeaderActionIds,
-  parseHashRoute,
+  normalizeAppPath,
+  parseAppRoute,
   resolveHeaderActionRange,
 } = window.AppLogic;
 
@@ -108,8 +112,8 @@ class BGMController {
       return;
     }
 
-    this.currentTrack = nextTrack;
-    this.audio.src = nextTrack;
+    this.currentTrack = normalizeAppPath(nextTrack, window.location.protocol);
+    this.audio.src = this.currentTrack;
     this.audio.play().catch(() => {});
   }
 
@@ -683,7 +687,7 @@ class SlideRenderer {
     this.currentIndex = 0;
     this.gameConfig = game;
 
-    const slidesHtml = await fetch(game.slidesHtmlPath).then((res) => res.text());
+    const slidesHtml = await fetch(normalizeAppPath(game.slidesHtmlPath, window.location.protocol)).then((res) => res.text());
     const temp = document.createElement('div');
     temp.innerHTML = slidesHtml;
 
@@ -1087,7 +1091,7 @@ class MultiGameApp {
     this.bindGlobalEvents();
     await this.loadGames();
     this.renderCatalog();
-    await this.applyRouteFromHash();
+    await this.applyRouteFromLocation();
   }
 
   applyDeviceContextClass() {
@@ -1126,7 +1130,7 @@ class MultiGameApp {
   }
 
   async loadGames() {
-    const response = await fetch('data/catalog.json');
+    const response = await fetch(normalizeAppPath('data/catalog.json', window.location.protocol));
     const data = await response.json();
     this.state.games = Array.isArray(data.games) ? data.games : [];
   }
@@ -1149,7 +1153,7 @@ class MultiGameApp {
       return this.state.gamePackages[gameId];
     }
 
-    const response = await fetch(catalogGame.gamePath);
+    const response = await fetch(normalizeAppPath(catalogGame.gamePath, window.location.protocol));
     const gamePackage = await response.json();
     const merged = {
       ...catalogGame,
@@ -1161,7 +1165,7 @@ class MultiGameApp {
     };
 
     if (merged.rules?.contentPath) {
-      const rulesResponse = await fetch(merged.rules.contentPath);
+      const rulesResponse = await fetch(normalizeAppPath(merged.rules.contentPath, window.location.protocol));
       merged.rules.contentMap = await rulesResponse.json();
     }
 
@@ -1281,8 +1285,8 @@ class MultiGameApp {
       }
     });
 
-    window.addEventListener('hashchange', () => {
-      this.applyRouteFromHash().catch(() => {});
+    window.addEventListener('popstate', () => {
+      this.applyRouteFromLocation().catch(() => {});
     });
   }
 
@@ -1294,16 +1298,17 @@ class MultiGameApp {
     return getGameByRouteName(this.state.games, routeName);
   }
 
-  navigateToHash(nextHash) {
-    if (window.location.hash === nextHash) {
-      this.applyRouteFromHash().catch(() => {});
+  navigateToPath(nextPath) {
+    if (window.location.pathname === nextPath && !window.location.hash) {
+      this.applyRouteFromLocation().catch(() => {});
       return;
     }
-    window.location.hash = nextHash;
+    window.history.pushState({}, '', nextPath);
+    this.applyRouteFromLocation().catch(() => {});
   }
 
   navigateToCatalog() {
-    this.navigateToHash('#/games');
+    this.navigateToPath(buildCatalogPath());
   }
 
   navigateToGameDetail(gameId) {
@@ -1312,7 +1317,7 @@ class MultiGameApp {
       this.navigateToCatalog();
       return;
     }
-    this.navigateToHash(`#/games/${this.getRouteNameForGame(game)}`);
+    this.navigateToPath(buildDetailPath(this.getRouteNameForGame(game)));
   }
 
   navigateToGameGm(gameId) {
@@ -1321,13 +1326,17 @@ class MultiGameApp {
       this.navigateToCatalog();
       return;
     }
-    this.navigateToHash(`#/games/${this.getRouteNameForGame(game)}/gm`);
+    this.navigateToPath(buildGmPath(this.getRouteNameForGame(game)));
   }
 
-  async applyRouteFromHash() {
-    const route = parseHashRoute(window.location.hash);
+  async applyRouteFromLocation() {
+    const route = parseAppRoute(window.location.pathname, window.location.hash);
     if (route.view === 'catalog') {
-      this.navigateToCatalog();
+      if (window.location.hash) {
+        window.history.replaceState({}, '', buildCatalogPath());
+      }
+      this.state.selectedGameId = null;
+      this.setView('catalog');
       return;
     }
 
@@ -1338,11 +1347,17 @@ class MultiGameApp {
     }
 
     if (route.view === 'detail') {
+      if (window.location.hash) {
+        window.history.replaceState({}, '', buildDetailPath(this.getRouteNameForGame(game)));
+      }
       this.openGameDetail(game.id);
       return;
     }
 
     if (route.view === 'gm') {
+      if (window.location.hash) {
+        window.history.replaceState({}, '', buildGmPath(this.getRouteNameForGame(game)));
+      }
       this.state.selectedGameId = game.id;
       await this.enterGame();
       return;
@@ -1584,7 +1599,10 @@ class MultiGameApp {
       card.className = 'game-card';
       card.dataset.role = 'game-open';
       card.dataset.gameId = game.id;
-      card.innerHTML = buildCatalogCardMarkup(game);
+      card.innerHTML = buildCatalogCardMarkup({
+        ...game,
+        boxImage: normalizeAppPath(game.boxImage, window.location.protocol),
+      });
       this.gameListEl.appendChild(card);
     });
   }
@@ -1602,7 +1620,7 @@ class MultiGameApp {
     this.detailCopyright.textContent = game.copyrightNotice || '';
 
     if (game.boxImage) {
-      this.detailBoxImage.src = game.boxImage;
+      this.detailBoxImage.src = normalizeAppPath(game.boxImage, window.location.protocol);
       this.detailBoxImage.classList.remove('hidden');
       this.detailImageFallback.classList.add('hidden');
     } else {

@@ -27,7 +27,7 @@
 ## 패키지 규칙
 - 모든 게임은 안정적인 `id`를 가져야 합니다.
 - 모든 카탈로그 항목은 `gamePath`를 포함해야 합니다.
-- 라우팅은 path 기반으로 유지합니다: `/games`, `/games/<routeName>`, `/games/<routeName>/gm`
+- 라우팅은 path 기반으로 유지합니다: `/titles`, `/titles/<routeName>`, `/titles/<routeName>/gm`
 - 검색용 필드는 카탈로그에 둡니다: `name`, 인원 수, `synopsis`, `searchText`
 - 실행용 필드는 게임 패키지에 둡니다: 슬라이드 경로, BGM 설정, 규칙 탭, 커스텀 동작
 - `app.js`에 게임별 하드코딩 분기를 늘리기보다 선언형 데이터 구조를 우선합니다.

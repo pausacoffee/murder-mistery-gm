@@ -73,12 +73,12 @@ describe('pure logic', () => {
   it('게임 routeName과 path 기반 경로를 상세/GM 라우트로 해석한다', () => {
     expect(getRouteNameForGame(games[0])).toBe('hunke');
     expect(getGameByRouteName(games, 'hunke')?.id).toBe('bunga');
-    expect(buildCatalogPath()).toBe('/games');
-    expect(buildDetailPath('hunke')).toBe('/games/hunke');
-    expect(buildGmPath('hunke')).toBe('/games/hunke/gm');
-    expect(parseAppRoute('/games', '')).toEqual({ view: 'catalog' });
-    expect(parseAppRoute('/games/hunke', '')).toEqual({ view: 'detail', routeName: 'hunke' });
-    expect(parseAppRoute('/games/hunke/gm', '')).toEqual({ view: 'gm', routeName: 'hunke' });
+    expect(buildCatalogPath()).toBe('/titles');
+    expect(buildDetailPath('hunke')).toBe('/titles/hunke');
+    expect(buildGmPath('hunke')).toBe('/titles/hunke/gm');
+    expect(parseAppRoute('/titles', '')).toEqual({ view: 'catalog' });
+    expect(parseAppRoute('/titles/hunke', '')).toEqual({ view: 'detail', routeName: 'hunke' });
+    expect(parseAppRoute('/titles/hunke/gm', '')).toEqual({ view: 'gm', routeName: 'hunke' });
   });
 
   it('작은 화면에서는 콜론 뒤 제목을 줄바꿈하고 큰 화면에서는 유지한다', () => {

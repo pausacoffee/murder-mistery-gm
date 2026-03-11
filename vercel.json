@@ -1,11 +1,11 @@
 {
   "rewrites": [
     {
-      "source": "/games",
+      "source": "/titles",
       "destination": "/index.html"
     },
     {
-      "source": "/games/(.*)",
+      "source": "/titles/(.*)",
       "destination": "/index.html"
     }
   ],

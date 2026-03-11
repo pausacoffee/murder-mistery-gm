@@ -90,9 +90,26 @@ document.getElementById('detailBackBtn')?.addEventListener('click', () => this.n
 - `detailBackBtn`처럼 화면에 없을 수도 있는 요소는 `?.`를 사용합니다.
 - `gameList`, `slidesContainer`처럼 앱 핵심 요소는 조용히 무시하지 말고 필수 요소로 취급합니다.
 
+## 테스트 / 순수 함수화
+- 테스트 가능한 계산 로직은 `lib/pure-logic.js` 같은 순수 함수 모듈로 먼저 분리합니다.
+- DOM 조작, `innerHTML`, `classList`, `document.getElementById(...)` 같은 브라우저 의존 코드는 가능한 한 마지막 렌더 단계에서만 사용합니다.
+- 판단 로직은 순수 함수에서 계산하고, `app.js`는 그 결과를 화면에 반영하는 역할을 우선합니다.
+- 현재 테스트 러너는 `Vitest`입니다.
+- `npm test`는 verbose 리포터를 사용하므로, 테스트 이름과 통과/실패 여부를 터미널에서 바로 읽을 수 있습니다.
+- 테스트 실행:
+
+```bash
+npm test
+```
+
+- 첫 테스트 세트는 `tests/pure-logic.test.mjs`에 있습니다.
+- 테스트 이름은 개발자가 읽는 문장 기준으로 한국어로 작성합니다.
+- 새 기능을 넣을 때는 “이 계산을 브라우저 없이 테스트할 수 있는가?”를 먼저 확인합니다.
+
 ## 문서
 - [GM 운영 가이드](docs/GM-PLAYBOOK.md)
 - [규칙 팝업 매핑](docs/RULES-MAPPING.md)
+- [테스트 가이드](docs/TESTING-GUIDE.md)
 - [문구/표기 가이드](docs/UI-WRITING-GUIDE.md)
 
 ## 보안 메모

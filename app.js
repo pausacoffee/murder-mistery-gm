@@ -1,4 +1,21 @@
-﻿
+﻿ 
+const {
+  buildCatalogCardMarkup,
+  buildContactMailDraft,
+  buildThemeHref,
+  getNextContactStep,
+  formatHeaderTitleForViewport,
+  getContactGames,
+  getPrevContactStep,
+  getContactSelectedGame,
+  getGameByRouteName,
+  getRouteNameForGame,
+  getSortedGames,
+  getVisibleHeaderActionIds,
+  parseHashRoute,
+  resolveHeaderActionRange,
+} = window.AppLogic;
+
 const RULE_TAB_TOPIC_MAP = {
   P: '능력과 파워',
   S: '승점',
@@ -715,23 +732,15 @@ class SlideRenderer {
     return -1;
   }
 
+  getSlidesMeta() {
+    return this.slides.map((slide) => ({
+      title: slide.dataset.title || '',
+      partAnchor: slide.dataset.partAnchor || '',
+    }));
+  }
+
   resolveHeaderActionRange(rangeConfig) {
-    if (!rangeConfig || rangeConfig.type !== 'slideRange') {
-      return null;
-    }
-
-    const start = rangeConfig.startAnchor
-      ? this.findSlideIndexByAnchor(rangeConfig.startAnchor)
-      : this.findSlideIndexByTitlePrefix(rangeConfig.startTitlePrefix || '');
-    const end = rangeConfig.endAnchor
-      ? this.findSlideIndexByAnchor(rangeConfig.endAnchor)
-      : this.findLastSlideIndexByTitlePrefix(rangeConfig.endTitlePrefix || rangeConfig.startTitlePrefix || '');
-
-    if (start < 0 || end < 0) {
-      return null;
-    }
-
-    return { start, end };
+    return resolveHeaderActionRange(rangeConfig, this.getSlidesMeta());
   }
 
   setupHeaderActions() {
@@ -754,10 +763,9 @@ class SlideRenderer {
     if (!this.headerActionList) return;
 
     const buttons = Array.from(this.headerActionList.querySelectorAll('[data-role="header-action"]'));
+    const visibleIds = new Set(getVisibleHeaderActionIds(this.headerActions, activeIndex, this.getSlidesMeta()));
     buttons.forEach((button) => {
-      const action = this.headerActions.find((item) => item.id === button.dataset.actionId);
-      const range = this.resolveHeaderActionRange(action?.showOn);
-      const isVisible = Boolean(action && range && activeIndex >= range.start && activeIndex <= range.end);
+      const isVisible = visibleIds.has(button.dataset.actionId);
       button.classList.toggle('hidden', !isVisible);
     });
 
@@ -861,12 +869,7 @@ class SlideRenderer {
   }
 
   formatHeaderTitle(title) {
-    const text = title || '';
-    const shouldBreakAfterColon = window.innerWidth <= 900 && /^\[(?:Part|파트)\s*\d+\].*:\s+/.test(text);
-    if (!shouldBreakAfterColon) {
-      return text;
-    }
-    return text.replace(/:\s+/, ':\n');
+    return formatHeaderTitleForViewport(title, window.innerWidth);
   }
 
   updateHeaderTitle() {
@@ -1274,17 +1277,11 @@ class MultiGameApp {
   }
 
   getRouteNameForGame(game) {
-    if (!game) {
-      return '';
-    }
-    if (game.routeName) {
-      return game.routeName;
-    }
-    return game.id;
+    return getRouteNameForGame(game);
   }
 
   getGameByRouteName(routeName) {
-    return this.state.games.find((game) => this.getRouteNameForGame(game) === routeName) || null;
+    return getGameByRouteName(this.state.games, routeName);
   }
 
   navigateToHash(nextHash) {
@@ -1318,36 +1315,24 @@ class MultiGameApp {
   }
 
   async applyRouteFromHash() {
-    const raw = window.location.hash.replace(/^#\/?/, '');
-    if (!raw) {
+    const route = parseHashRoute(window.location.hash);
+    if (route.view === 'catalog') {
       this.navigateToCatalog();
       return;
     }
 
-    const parts = raw.split('/').filter(Boolean);
-    if (parts[0] !== 'games') {
-      this.navigateToCatalog();
-      return;
-    }
-
-    if (parts.length === 1) {
-      this.setView('catalog');
-      return;
-    }
-
-    const routeName = parts[1];
-    const game = this.getGameByRouteName(routeName);
+    const game = this.getGameByRouteName(route.routeName);
     if (!game) {
       this.navigateToCatalog();
       return;
     }
 
-    if (parts.length === 2) {
+    if (route.view === 'detail') {
       this.openGameDetail(game.id);
       return;
     }
 
-    if (parts.length === 3 && parts[2] === 'gm') {
+    if (route.view === 'gm') {
       this.state.selectedGameId = game.id;
       await this.enterGame();
       return;
@@ -1387,12 +1372,12 @@ class MultiGameApp {
 
   applyGameTheme(game) {
     if (!this.gameThemeStylesheet) return;
-    const themeName = game?.theme;
-    if (!themeName || themeName === 'default') {
+    const href = buildThemeHref(game?.theme);
+    if (!href) {
       this.gameThemeStylesheet.removeAttribute('href');
       return;
     }
-    this.gameThemeStylesheet.setAttribute('href', `styles/themes/${themeName}.css`);
+    this.gameThemeStylesheet.setAttribute('href', href);
   }
 
   openContactModal() {
@@ -1425,87 +1410,25 @@ class MultiGameApp {
   }
 
   goBackContactStep() {
-    const nextStep = Math.max(1, this.state.contactDraft.step - 1);
-    this.state.contactDraft.step = nextStep;
+    this.state.contactDraft.step = getPrevContactStep(this.state.contactDraft.step);
     this.renderContactModal();
   }
 
   goNextContactStep() {
-    if (this.state.contactDraft.step === 2 && !this.state.contactDraft.gameId) return;
-    this.state.contactDraft.step = Math.min(3, this.state.contactDraft.step + 1);
+    this.state.contactDraft.step = getNextContactStep(this.state.contactDraft.step, Boolean(this.state.contactDraft.gameId));
     this.renderContactModal();
   }
 
   getContactGames() {
-    return [...this.state.games].sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+    return getContactGames(this.state.games);
   }
 
   getContactSelectedGame() {
-    return this.state.games.find((game) => game.id === this.state.contactDraft.gameId) || null;
+    return getContactSelectedGame(this.state.games, this.state.contactDraft.gameId);
   }
 
   getContactMailDraft() {
-    const typeConfig = CONTACT_REQUEST_TYPES[this.state.contactDraft.type];
-    const game = this.getContactSelectedGame();
-    if (!typeConfig || !game) {
-      return {
-        subject: '',
-        body: '',
-      };
-    }
-
-    if (this.state.contactDraft.type === 'takedown') {
-      return {
-        subject: `[권리자 삭제 요청] ${game.name}`,
-        body: [
-          '안녕하세요. 아래 콘텐츠에 대한 삭제 또는 비공개 처리를 요청드립니다.',
-          '',
-          `[대상 게임] ${game.name}`,
-          '[요청자 성명 / 법인명]',
-          '[소속 또는 대리 관계]',
-          '[연락 가능한 공식 이메일]',
-          '[공식 웹사이트 또는 권리 확인 가능한 주소]',
-          '',
-          '[권리 보유 또는 대리 권한 설명]',
-          '- 원작자 / 퍼블리셔 / 라이선스 보유자 / 정식 대리인 여부를 적어 주세요.',
-          '- 가능하면 상품 페이지, 공식 사이트, 사업자 정보, 권리 고지 페이지 등을 함께 보내 주세요.',
-          '',
-          '[삭제를 요청하는 대상]',
-          '- 어떤 게임명 / 화면 / 문구 / 자료인지 구체적으로 적어 주세요.',
-          '',
-          '[요청 사유]',
-          '- 어떤 권리를 침해한다고 판단하는지 적어 주세요.',
-          '',
-          '[첨부 자료]',
-          '- 권리 확인 자료 또는 공식 도메인에서 확인 가능한 링크',
-          '- 필요 시 캡처 화면',
-          '',
-          '허위 또는 권한 없는 요청은 처리되지 않을 수 있습니다.',
-        ].join('\n'),
-      };
-    }
-
-    return {
-      subject: `[피드백] ${game.name}`,
-      body: [
-        '안녕하세요. 아래 내용으로 피드백을 보냅니다.',
-        '',
-        `[대상 게임] ${game.name}`,
-        '[문제 유형] 오탈자 / 사용성 / 레이아웃 / 기타',
-        '',
-        '[설명]',
-        '- 어떤 화면에서 무엇이 문제였는지 적어 주세요.',
-        '',
-        '[재현 정보]',
-        '- 사용 기기:',
-        '- 브라우저:',
-        '- 가로/세로 모드:',
-        '',
-        '[첨부 권장]',
-        '- 문제 화면 캡처',
-        '- 가능하면 발생 직전 단계 설명',
-      ].join('\n'),
-    };
+    return buildContactMailDraft(this.state.contactDraft, this.state.games);
   }
 
   renderContactModal() {
@@ -1634,21 +1557,7 @@ class MultiGameApp {
   }
 
   getSortedGames() {
-    const query = this.state.query;
-    const filtered = this.state.games.filter((game) => {
-      const haystack = [
-        game.name || '',
-        game.searchText || '',
-        `${game.playerMin || ''}인`,
-        `${game.playerMax || ''}인`,
-        `${game.playerMin || ''}-${game.playerMax || ''}`,
-      ].join(' ').toLowerCase();
-      return haystack.includes(query);
-    });
-    if (this.state.sort === 'players') {
-      return filtered.sort((a, b) => (a.playerMin - b.playerMin) || a.name.localeCompare(b.name, 'ko'));
-    }
-    return filtered.sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+    return getSortedGames(this.state.games, this.state.query, this.state.sort);
   }
 
   renderCatalog() {
@@ -1665,26 +1574,7 @@ class MultiGameApp {
       card.className = 'game-card';
       card.dataset.role = 'game-open';
       card.dataset.gameId = game.id;
-      card.innerHTML = `
-        <div class="game-card-image-wrap">
-          ${game.boxImage ? `<img class="game-card-image" src="${game.boxImage}" alt="${game.name} 박스 이미지" />` : '<div class="game-card-image-fallback">BOX ART</div>'}
-        </div>
-        <div class="game-card-body">
-          <h3 class="game-card-title">${game.name}</h3>
-          <div class="game-card-spacer" aria-hidden="true"></div>
-          <p class="game-card-players" aria-label="플레이 인원 ${game.playerMin}명부터 ${game.playerMax}명">
-            <span class="game-card-players-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" focusable="false">
-                <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3Z" />
-                <path d="M8 11c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3Z" />
-                <path d="M8 13c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13Z" />
-                <path d="M16 13c-.29 0-.62.02-.97.05 1.16.84 1.97 1.96 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5Z" />
-              </svg>
-            </span>
-            <span class="game-card-players-range">${game.playerMin}~${game.playerMax}</span>
-          </p>
-        </div>
-      `;
+      card.innerHTML = buildCatalogCardMarkup(game);
       this.gameListEl.appendChild(card);
     });
   }

@@ -19,7 +19,8 @@
   }
 
   .game-card-meta {
-    gap: 8px;
+    align-items: flex-start;
+    gap: 6px;
   }
 
   .game-card-players,

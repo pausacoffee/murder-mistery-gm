@@ -1666,7 +1666,7 @@ class MultiGameApp {
       ? `
         <a class="detail-meta-link" href="${game.purchaseLink}" target="_blank" rel="noreferrer noopener">
           <img class="detail-meta-icon" src="${shoppingCartIconSrc}" alt="" aria-hidden="true" />
-          <span class="detail-meta-text">구매 링크</span>
+          <span class="detail-meta-text">구매 사이트</span>
         </a>
       `
       : '';

@@ -79,10 +79,10 @@
 
 .game-card-meta {
   display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  justify-content: flex-end;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  justify-content: center;
 }
 
 .game-card-players,
